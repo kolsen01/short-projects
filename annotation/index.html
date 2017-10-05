@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <title>A Classic</title>
+
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
@@ -11,10 +12,33 @@
 <h1 id="title">A Classic</h1>
 
 <video src="https://www.cs.tufts.edu/comp/20/classic.mp4" id="a_classic" controls></video>
+
 <div id="lyrics"></div>
 
-<script>
-	// Complete this section and create a CSS file named style.css
+<script type="text/javascript">
+	var a_classic = document.getElementById("a_classic");
+	var lyrics = document.getElementById("lyrics");
+
+	a_classic.addEventListener("timeupdate", function() {
+		console.log("Test")
+
+		if (a_classic.currentTime < 4) {
+			lyrics.innerHTML ="<h3>Testing</h3>";
+		}
+
+		else if (a_classic.currentTime > 4 && a_classic.currentTime < 5.5) {
+			lyrics.innerHTML = "<h3>Children have You ever met the Bogeyman before</h3>";
+		}
+		else if (a_classic.currentTime > 5.5 && a_classic.currentTime < 6.5) {
+			lyrics.innerHTML = "<h3>No, of course You haven't for You're much too good, I'm sure;</h3>";
+		}
+		else {
+			lyrics.innerHTML ="";
+		}
+
+		}, false);
+
 </script>
+
 </body>
 </html>	
