@@ -1,7 +1,13 @@
 body {
-	text-align: left;
+	text-align: center;
+}
+
+h1 {
+	font-size: 30pt;
+	font-family: cursive;
 }
 
 #lyrics {
-	text-align: left;
+	text-align: center;
+	font-family: Arial;
 }

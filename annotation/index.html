@@ -20,13 +20,12 @@
 	var lyrics = document.getElementById("lyrics");
 
 	a_classic.addEventListener("timeupdate", function() {
-		console.log("Test")
 
-		if (a_classic.currentTime < 10) {
+		if (a_classic.currentTime < 9) {
 			lyrics.innerHTML ="";
 		}
 
-		else if (a_classic.currentTime > 10 && a_classic.currentTime < 13) {
+		else if (a_classic.currentTime > 9 && a_classic.currentTime < 13) {
 			lyrics.innerHTML = "<h3>Children have You ever met the Bogeyman before</h3>";
 		}
 		else if (a_classic.currentTime > 13 && a_classic.currentTime < 17) {
