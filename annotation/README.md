@@ -8,5 +8,5 @@
 		* file names 
 		* repo name 
 		* README file
-		* one CSS file)
+		* one CSS file
 	2. The index.html page following all the instructions above
