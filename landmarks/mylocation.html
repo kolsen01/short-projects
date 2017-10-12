@@ -6,14 +6,31 @@
 		<meta charset="utf-8">
 
 		<script> 
-			lat = 0;
-			long = 0; 
+		var lat = -99999;
+		var lng = -99999;
 
 				function mylocation() {
+					if (navigator.geolocation) {
+						navigator.geolocation.getCurrentPosition(function(position) {
+							lat = pos.coords.latitude;
+							lng = pos.coords.longitude;
+							printLocation();
+						});
+
+					}
+				}	
+
+				function printLocation() {
+					elem = document.getElementById("location");
+					elem.innerHTML = "<p>" + lat + ", " + lng + "</p>";
+				}	
+		</script>
+	</head>	
 
 
-				}
-
-			</script>
-
-	</head>
+	<body onload= "mylocation()">
+		<h1> Where Am I? </h1>
+			<div id="location"> Looking... </div>
+	</body>	
+		
+</html>
