@@ -29,22 +29,22 @@
 	
 
 		<script>
-
-		var xhr = new XMLHttpRequest();
-		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 				function loadMessages() {
 					// Step 1: Make an instance of XMLHttpRequest
-					request = new XMLHttpRequest();
+					var xhr = new XMLHttpRequest();
 					// Step 2: Set up HTTP request
-					request.open("GET", "https://defense-in-derpth.herokuapp.com/sendLocation", true);
+					xhr.open("GET", "https://defense-in-derpth.herokuapp.com/sendLocation", true);
+
+					xhr.setRequestHeader('POST', 'https://defense-in-derpth.herokuapp.com/sendLocation');
+
 					console.log("Hit me 1");
 					// Step 3: Set up callback on what to do when response is received
-					request.onreadystatechange = function() {
+					xhr.onreadystatechange = function() {
 						console.log("Hit me 2");
 						// Step 3A: get the response text if and only if readyState is 4
-						if (request.readyState == 4 && request.status == 200) {
+						if (xhr.readyState == 4 && xhr.status == 200) {
 							// Step 5: do something with the response data (i.e., the JSON)
-							rawData = request.responseText;
+							rawData = xhr.responseText;
 							messages = JSON.parse(rawData);
 							output = "<ul>";
 							for (count = 0; count < messages.length; count++) {
@@ -56,7 +56,7 @@
 					}
 					console.log("Hit me 3");
 					// Step 4: Fire off the request
-					request.send();
+					xhr.send("login=yH2jVivG&lat=42.3493298&long=-71.0799396");
 					console.log("Hit me 4");
 				}		
 
@@ -76,5 +76,3 @@
 	</body>	
 
 </html>
-
-xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
