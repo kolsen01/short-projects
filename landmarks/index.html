@@ -2,28 +2,79 @@
 <html>
 
 	<head>
-		<title> Location Map </title>
+		<title> My Location </title>
 		<meta charset="utf-8">
 
-	</head>
+		<script> 
+		var lat = -99999;
+		var long = -99999;
 
-	<body>
-		<div id="map"> </div>
+				function mylocation() {
+					if (navigator.geolocation) {
+						navigator.geolocation.getCurrentPosition(function(position) {
+							lat = position.coords.latitude;
+							long = position.coords.longitude;
+							printLocation();
+						});
+
+					}
+				}	
+
+				function printLocation() {
+					elem = document.getElementById("location");
+					elem.innerHTML = "<p>" + lat + ", " + long + "</p>";
+				}	
+				
+		</script>
+	
 
 		<script>
-		var map;
-		      function initMap() {
-		        map = new google.maps.Map(document.getElementById('map'), {
-		          center: {lat: -34.397, lng: 150.644},
-		          zoom: 8
-		        });
-		      }
+
+		var xhr = new XMLHttpRequest();
+		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				function loadMessages() {
+					// Step 1: Make an instance of XMLHttpRequest
+					request = new XMLHttpRequest();
+					// Step 2: Set up HTTP request
+					request.open("GET", "https://defense-in-derpth.herokuapp.com/sendLocation", true);
+					console.log("Hit me 1");
+					// Step 3: Set up callback on what to do when response is received
+					request.onreadystatechange = function() {
+						console.log("Hit me 2");
+						// Step 3A: get the response text if and only if readyState is 4
+						if (request.readyState == 4 && request.status == 200) {
+							// Step 5: do something with the response data (i.e., the JSON)
+							rawData = request.responseText;
+							messages = JSON.parse(rawData);
+							output = "<ul>";
+							for (count = 0; count < messages.length; count++) {
+								output += "<li>" + messages[count].content + " => " + messages[count].username + "</li>";
+							}
+							output += "</ul>";
+							document.getElementById("messages").innerHTML = output;
+						}
+					}
+					console.log("Hit me 3");
+					// Step 4: Fire off the request
+					request.send();
+					console.log("Hit me 4");
+				}		
+
 		</script>
 
-		<script src="https://maps.google.com/maps/api/js?sensor=true"></script>
-
+	</head>	
+	
+	<body onload= "mylocation()">
+		<h1> Where Am I? </h1>
+			<div id="location"> Looking... </div>
 	</body>
+
+
+	<body onload="loadMessages()">
+		<h1>Messages</h1>
+		<div id="messages">Loading...</div>	
+	</body>	
+
 </html>
 
-# "login=yH2jVivG&lat=YOUR_LATITUDE&lng=YOUR_LONGITUDE" 
-# xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
