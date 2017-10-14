@@ -6,34 +6,30 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 
-		<script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=true"></script>
+		<script src="https://maps.google.com/maps/api/js?sensor=true"></script>
 
 		<script> 
-			var lat = -99999;
-			var long = -99999;
+			var lat = 0;
+			var long = 0;
 			var me;
 			var map;
 			var parameters;
 			var JSONresponse;
-			var url= 'https://defense-in-derpth.herokuapp.com/sendLocation' //creating var for url
-
-
+			var url = 'https://defense-in-derpth.herokuapp.com/sendLocation' //creating var for url
 			//Post request
 			var xhr = new XMLHttpRequest();					
 			xhr.open("POST", url, true);
 			xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
-				//mapTypeId: google.maps.MapTypeId.ROADMAP
-
-			//var infowindow = new google.maps.InfoWindow();	
+			var infowindow = new google.maps.InfoWindow();	
 
 			function mylocation() {
 				navigator.geolocation.getCurrentPosition(function(position) {
 					lat = position.coords.latitude;
-					long = position.coords.longitude;	
-					parameters = 'login=kolsen01&lat=' + lat + '&long='	+ long;
+					long = position.coords.longitude;
+
+					parameters = 'login=yH2jVivG&lat=' + lat + '&long='	+ long;
 					xhr.send(parameters);
-					//printLocation();
 					xhr.onreadystatechange = function() {
 						if (xhr.readyState == 4 && xhr.status == 200) {
 							JSONresponse = JSON.parse(xhr.responseText);
@@ -47,53 +43,42 @@
 
 							me = new google.maps.LatLng(lat, long);
 							createMap(JSONresponse);
-					};	
-				}
-			})	
-		}	
-	
+						}
+						else if (xhr.readyState == 4 && xhr.status != 200) {
+							document.getElementById("JSONresponse").innerHTML = "<p> Nope </p>";
+						}
+					}
+				});
 
-			/* function printLocation() {
-				elem = document.getElementById("location");
-				elem.innerHTML = "<p>" + lat + ", " + long + "</p>";
-			}
-			*/
+			}		
 
 			//creates map
-			function createMap(JSONresponse)
-			{			
-				me = new google.maps.Map(document.getElementById('map_canvas'), {
-					center: me,
-					zoom: 13
+			function createMap(JSONresponse) {			
+				map = new google.maps.Map(document.getElementById('map_canvas'), {
+					position: me,
+					zoom: 13,
+					mapTypeId: google.maps.MapTypeId.ROADMAP
 				});
 
-				map.panTo(me);
+				//map.panTo(me);
 				
-				var marker = new google.maps.Marker({ //market
+				var marker = new google.maps.Marker({ //marker
 					position: me,
-					title: "kolsen"
+					title: "me"
 				});
 					
-				// Open info window on click of marker
-				google.maps.event.addListener(marker, 'click', function() {
+				google.maps.event.addListener(marker, 'mouseover', function() {
 					infowindow.setContent(this.title);
 					infowindow.open(map, this);
 				});
 
-				google.maps.event.addListener(marker, 'click', function() {
+				google.maps.event.addListener(marker, 'mouseout', function() {
 					infowindow.close();
 				});	
 
 				marker.setMap(map);
 			}
 
-/*			function loadMessages() {
-
-					else if (xhr.readyState ==4 && xhr.status !=200) {
-						document.getElementById("messages").innerHTML = "<p> Nope </p>";
-					}
-
-*/
 			function init() {
 				var body = document.getElementById('map_canvas');
 				body.innerHTML = "<h1> Loading ...</h1>";
