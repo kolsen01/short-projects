@@ -6,15 +6,16 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 
-		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
+		<script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=true"></script>
 
 		<script> 
 			var lat = -99999;
 			var long = -99999;
 			var me;
+			var map;
 			var parameters;
 			var JSONresponse;
-			var url: 'https://defense-in-derpth.herokuapp.com/sendLocation' //creating var for url
+			var url= 'https://defense-in-derpth.herokuapp.com/sendLocation' //creating var for url
 
 
 			//Post request
@@ -32,11 +33,11 @@
 					long = position.coords.longitude;	
 					parameters = 'login=kolsen01&lat=' + lat + '&long='	+ long;
 					xhr.send(parameters);
-					printLocation();
-
+					//printLocation();
+					xhr.onreadystatechange = function() {
 						if (xhr.readyState == 4 && xhr.status == 200) {
-							JSONresposne = JSON.parse(xhr, responseText);
-							output = "<ul>";
+							JSONresponse = JSON.parse(xhr.responseText);
+							//output = "<ul>";
 							/*for (count = 0; count < messages.length; count++) {
 									output += "<li>" + messages[count].content + " => " + messages[count].username + "</li>";
 								}
@@ -46,15 +47,17 @@
 
 							me = new google.maps.LatLng(lat, long);
 							createMap(JSONresponse);
-					}	
-				});
-			}
+					};	
+				}
+			})	
+		}	
 	
 
-			function printLocation() {
+			/* function printLocation() {
 				elem = document.getElementById("location");
 				elem.innerHTML = "<p>" + lat + ", " + long + "</p>";
 			}
+			*/
 
 			//creates map
 			function createMap(JSONresponse)
@@ -83,33 +86,20 @@
 
 				marker.setMap(map);
 			}
-		</script>
 
-		<script>
 /*			function loadMessages() {
-
-
-				console.log("Hit me 1");
-
-				xhr.onreadystatechange = function() {
-					console.log("Hit me 2");
-
 
 					else if (xhr.readyState ==4 && xhr.status !=200) {
 						document.getElementById("messages").innerHTML = "<p> Nope </p>";
 					}
-				}
-				console.log("Hit me 3");
 
-				console.log("Hit me 4");
-			}	
-
+*/
 			function init() {
 				var body = document.getElementById('map_canvas');
 				body.innerHTML = "<h1> Loading ...</h1>";
 				mylocation();
 			}
-*/		
+
 	</script>
 
 	</head>	
@@ -117,10 +107,5 @@
 	<body onload="init()">
 		<div id='map_canvas'> Trying to determine location... </div>
 	</body>
-
-	<body onload="loadMessages()">
-		<h1>Messages</h1>
-		<div id="messages">Loading...</div>	
-	</body>	
 
 </html>
