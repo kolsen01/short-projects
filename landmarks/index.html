@@ -12,23 +12,44 @@
 			var lat = -99999;
 			var long = -99999;
 			var me;
+			var parameters;
 			var JSONresponse;
-			var url: 'https://defense-in-derpth.herokuapp.com/sendLocation'
-			var myOptions = {
+			var url: 'https://defense-in-derpth.herokuapp.com/sendLocation' //creating var for url
 
-				mapTypeId: google.maps.MapTypeId.ROADMAP
-			};
-			var infowindow = new google.maps.InfoWindow();	
+
+			//Post request
+			var xhr = new XMLHttpRequest();					
+			xhr.open("POST", url, true);
+			xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+				//mapTypeId: google.maps.MapTypeId.ROADMAP
+
+			//var infowindow = new google.maps.InfoWindow();	
 
 			function mylocation() {
-				if (navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition(function(position) {
-						lat = position.coords.latitude;
-						long = position.coords.longitude;						
-						printLocation();
-					});
-				}
-			}	
+				navigator.geolocation.getCurrentPosition(function(position) {
+					lat = position.coords.latitude;
+					long = position.coords.longitude;	
+					parameters = 'login=kolsen01&lat=' + lat + '&long='	+ long;
+					xhr.send(parameters);
+					printLocation();
+
+						if (xhr.readyState == 4 && xhr.status == 200) {
+							JSONresposne = JSON.parse(xhr, responseText);
+							output = "<ul>";
+							/*for (count = 0; count < messages.length; count++) {
+									output += "<li>" + messages[count].content + " => " + messages[count].username + "</li>";
+								}
+								output += "</ul>";
+								document.getElementById("messages").innerHTML = output;
+							}*/
+
+							me = new google.maps.LatLng(lat, long);
+							createMap(JSONresponse);
+					}	
+				});
+			}
+	
 
 			function printLocation() {
 				elem = document.getElementById("location");
@@ -36,7 +57,7 @@
 			}
 
 			//creates map
-			function createMap()
+			function createMap(JSONresponse)
 			{			
 				me = new google.maps.Map(document.getElementById('map_canvas'), {
 					center: me,
@@ -67,26 +88,12 @@
 		<script>
 /*			function loadMessages() {
 
-				var xhr = new XMLHttpRequest();					
-				xhr.open("POST", "https://defense-in-derpth.herokuapp.com/sendLocation", true);
-				xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
 				console.log("Hit me 1");
 
 				xhr.onreadystatechange = function() {
 					console.log("Hit me 2");
-					
-					if (xhr.readyState == 4 && xhr.status == 200) {
 
-						rawData = xhr.responseText;
-						messages = JSON.parse(rawData);
-						output = "<ul>";
-						for (count = 0; count < messages.length; count++) {
-							output += "<li>" + messages[count].content + " => " + messages[count].username + "</li>";
-						}
-						output += "</ul>";
-						document.getElementById("messages").innerHTML = output;
-					}
 
 					else if (xhr.readyState ==4 && xhr.status !=200) {
 						document.getElementById("messages").innerHTML = "<p> Nope </p>";
@@ -94,7 +101,6 @@
 				}
 				console.log("Hit me 3");
 
-				xhr.send("location.json");
 				console.log("Hit me 4");
 			}	
 
