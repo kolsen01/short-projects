@@ -11,20 +11,14 @@
 		<script> 
 			var lat = -99999;
 			var long = -99999;
-			var map;
+			var me;
+			var JSONresponse;
+			var url: 'https://defense-in-derpth.herokuapp.com/sendLocation'
 			var myOptions = {
-				zoom: 13,
-				center: me, 
+
 				mapTypeId: google.maps.MapTypeId.ROADMAP
 			};
-			var marker;
 			var infowindow = new google.maps.InfoWindow();	
-
-			function init() {
-				map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-				mylocation();
-				renderMap();
-			}
 
 			function mylocation() {
 				if (navigator.geolocation) {
@@ -41,23 +35,31 @@
 				elem.innerHTML = "<p>" + lat + ", " + long + "</p>";
 			}
 
-			function renderMap()
+			function createMap()
 			{			
-				me = new google.maps.LatLng(lat, long);
+				me = new google.maps.Map(document.getElementById('map_canvas'), {
+					center: me,
+					zoom: 13
+				});
+
 				map.panTo(me);
 				
-				// Create a marker
-				marker = new google.maps.Marker({
+				var marker = new google.maps.Marker({ //market
 					position: me,
-					title: "Here I Am!"
+					title: "kolsen"
 				});
-				marker.setMap(map);
 					
 				// Open info window on click of marker
 				google.maps.event.addListener(marker, 'click', function() {
-					infowindow.setContent(marker.title);
-					infowindow.open(map, marker);
+					infowindow.setContent(this.title);
+					infowindow.open(map, this);
 				});
+
+				google.maps.event.addListener(marker, 'click', function() {
+					infowindow.close();
+				});	
+
+				marker.setMap(map);
 			}
 		</script>
 
@@ -65,7 +67,7 @@
 			function loadMessages() {
 
 				var xhr = new XMLHttpRequest();					
-				xhr.open("GET", "location.json", true);
+				xhr.open("POST", "https://defense-in-derpth.herokuapp.com/sendLocation", true);
 				xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
 				console.log("Hit me 1");
@@ -95,14 +97,18 @@
 				console.log("Hit me 4");
 			}	
 
+			function init() {
+				var body = document.getElementById('map_canvas');
+				body.innerHTML = "<h1> Loading ...</h1>";
+				mylocation();
+			}
+
 		</script>
 
 	</head>	
 	
 	<body onload="init()">
-		<h1> My Location </h1>
-		<div id="location">Trying to determine location...</div>	
-		<div id='map_canvas'> click </div>
+		<div id='map_canvas'> Trying to determine location... </div>
 	</body>
 
 	<body onload="loadMessages()">
