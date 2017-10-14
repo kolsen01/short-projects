@@ -24,36 +24,39 @@
 			var infowindow = new google.maps.InfoWindow();	
 
 			function mylocation() {
-				navigator.geolocation.getCurrentPosition(function(position) {
-					lat = position.coords.latitude;
-					long = position.coords.longitude;
+				if (navigator.geolocation) {	
+					navigator.geolocation.getCurrentPosition(function(position) {
+						lat = position.coords.latitude;
+						long = position.coords.longitude;
 
-					parameters = 'login=yH2jVivG&lat=' + lat + '&long='	+ long;
-					xhr.send(parameters);
-					xhr.onreadystatechange = function() {
-						if (xhr.readyState == 4 && xhr.status == 200) {
-							JSONresponse = JSON.parse(xhr.responseText);
-							//output = "<ul>";
-							/*for (count = 0; count < messages.length; count++) {
-									output += "<li>" + messages[count].content + " => " + messages[count].username + "</li>";
-								}
-								output += "</ul>";
-								document.getElementById("messages").innerHTML = output;
-							}*/
+						parameters = 'login=yH2jVivG&lat=' + lat + '&long='	+ long;
+						xhr.send(parameters);
+						xhr.onreadystatechange = function() {
+							if (xhr.readyState == 4 && xhr.status == 200) {
+								JSONresponse = JSON.parse(xhr.responseText);
+								//output = "<ul>";
+								/*for (count = 0; count < messages.length; count++) {
+										output += "<li>" + messages[count].content + " => " + messages[count].username + "</li>";
+									}
+									output += "</ul>";
+									document.getElementById("messages").innerHTML = output;
+								}*/
 
-							me = new google.maps.LatLng(lat, long);
-							createMap(JSONresponse);
+								createMap(JSONresponse);
+							}
+							else if (xhr.readyState == 4 && xhr.status != 200) {
+								document.getElementById("JSONresponse").innerHTML = "<p> Nope </p>";
+							}
 						}
-						else if (xhr.readyState == 4 && xhr.status != 200) {
-							document.getElementById("JSONresponse").innerHTML = "<p> Nope </p>";
-						}
-					}
-				});
+					});
 
-			}		
+				}
+			}			
 
 			//creates map
-			function createMap(JSONresponse) {			
+			function createMap(JSONresponse) {
+				me = new google.maps.LatLng(lat, long);
+
 				map = new google.maps.Map(document.getElementById('map_canvas'), {
 					position: me,
 					zoom: 13,
