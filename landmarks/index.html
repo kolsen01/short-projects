@@ -35,6 +35,7 @@
 				elem.innerHTML = "<p>" + lat + ", " + long + "</p>";
 			}
 
+			//creates map
 			function createMap()
 			{			
 				me = new google.maps.Map(document.getElementById('map_canvas'), {
@@ -64,7 +65,7 @@
 		</script>
 
 		<script>
-			function loadMessages() {
+/*			function loadMessages() {
 
 				var xhr = new XMLHttpRequest();					
 				xhr.open("POST", "https://defense-in-derpth.herokuapp.com/sendLocation", true);
@@ -102,8 +103,8 @@
 				body.innerHTML = "<h1> Loading ...</h1>";
 				mylocation();
 			}
-
-		</script>
+*/		
+	</script>
 
 	</head>	
 	
