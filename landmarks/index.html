@@ -40,7 +40,6 @@
 							if (xhr.readyState == 4 && xhr.status == 200) {
 								loc = JSON.parse(xhr.responseText);
 								createMap(loc);
-								console.log(loc)
 							}			
 						}
 					});
@@ -52,7 +51,7 @@
 				me = new google.maps.LatLng(lat, long);
 
 				map = new google.maps.Map(document.getElementById('map_canvas'), {
-					position: me,
+					center: me,
 					zoom: 13,
 					mapTypeId: google.maps.MapTypeId.ROADMAP
 				});
@@ -66,7 +65,7 @@
 
 				marker.setMap(map);
 
-				google.maps.event.addListener(marker, 'mouseup', function() {
+				/*google.maps.event.addListener(marker, 'mouseup', function() {
 					infowindow.setContent(this.title);
 					infowindow.open(map, this);
 				});
@@ -74,37 +73,38 @@
 				google.maps.event.addListener(marker, 'mousedown', function() {
 					infowindow.close();
 				});	
-				find_landmarks(loc);
-				
-			}
+				//find_landmarks(loc);
+				*/
+			//}
 
 			//creates map local landmarks
-			function find_landmarks(loc) {
+			//function find_landmarks(loc) {
 				//var infowindow = new google.maps.InfoWindow();	
 				// filter through location to get 
-				for (count=0; count < loc.length; count++) {
+				for (var count=0; count < loc.length; count++) {
+					console.log(loc[count].lat)
 					var pointPos = new google.maps.LatLng(loc[count]["lat"], loc[count]["lng"]);
-					var pointLat = pointPos.lat();
-					var pointLong = pointPos.lng();
-				
+
+
 					var point = new google.maps.Marker({ //marker
 						position: pointPos,
-						title: "test"
+						title: loc[count]["login"]
 					});
 
 					points.push(point);
+
 					if (marker == point) {
 						continue;
 					}
 
 					points[count].setMap(map);			
 						
-					google.maps.event.addListener(points[count], 'mouseup', function() {
+					google.maps.event.addListener(marker, points[count], 'mouseup', function() {
 						infowindow.setContent(this.title);
 						infowindow.open(map, this);
 					});
 
-					google.maps.event.addListener(points[count], 'mousedown', function() {
+					google.maps.event.addListener(marker, points[count], 'mousedown', function() {
 						infowindow.close();
 					});	
 				}	
