@@ -14,9 +14,11 @@
 			var long = 0;
 			var	me = new google.maps.LatLng(lat, long);
 			var map;
-			var parameters;
+
+			var parameters; // login +latlng
 			var JSONresponse;
 			var url = 'https://defense-in-derpth.herokuapp.com/sendLocation' //creating var for url
+
 			//Post request
 			var xhr = new XMLHttpRequest();					
 			xhr.open("POST", url, true);
@@ -24,6 +26,7 @@
 
 			var infowindow = new google.maps.InfoWindow();	
 
+			//gets my location
 			function mylocation() {
 				if (navigator.geolocation) {	
 					navigator.geolocation.getCurrentPosition(function(position) {
@@ -39,7 +42,6 @@
 						}
 					createMap(JSONresponse);	
 					});
-
 				}
 			}			
 
@@ -54,8 +56,6 @@
 				});
 
 				map.panTo(me);
-
-				//map.panTo(me);
 				
 				var marker = new google.maps.Marker({ //marker
 					position: me,
@@ -72,12 +72,17 @@
 				google.maps.event.addListener(marker, 'mouseout', function() {
 					infowindow.close();
 				});	
+			}
+
+			function find_people_loc(JSONresponse) {
+				
 
 			}
 
+			//init, calls mylocation()
 			function init() {
 				var body = document.getElementById('map_canvas');
-				body.innerHTML = "<h1> Loading ...</h1>";
+				body.innerHTML = "<h3> Loading ... </h3>";
 				mylocation();
 			}
 
