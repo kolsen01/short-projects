@@ -12,7 +12,10 @@
 		<script> 
 			var lat = 0;
 			var long = 0;
+			var loc_lat = 0;
+			var loc_long = 0;
 			var	me = new google.maps.LatLng(lat, long);
+			var pointPos = new google.maps.LatLng(loc_lat, loc_long);
 			var map;
 			var points = []; // list to hold multiple places
 
@@ -39,6 +42,7 @@
 						xhr.onreadystatechange = function() {
 							if (xhr.readyState == 4 && xhr.status == 200) {
 								loc = JSON.parse(xhr.responseText);
+								console.log(loc)
 								createMap(loc);
 							}			
 						}
@@ -65,7 +69,7 @@
 
 				marker.setMap(map);
 
-				/*google.maps.event.addListener(marker, 'mouseup', function() {
+				google.maps.event.addListener(marker, 'mouseup', function() {
 					infowindow.setContent(this.title);
 					infowindow.open(map, this);
 				});
@@ -73,41 +77,39 @@
 				google.maps.event.addListener(marker, 'mousedown', function() {
 					infowindow.close();
 				});	
-				//find_landmarks(loc);
-				*/
-			//}
 
-			//creates map local landmarks
-			//function find_landmarks(loc) {
-				//var infowindow = new google.maps.InfoWindow();	
-				// filter through location to get 
-				for (var count=0; count < loc.length; count++) {
-					console.log(loc[count].lat)
-					var pointPos = new google.maps.LatLng(loc[count]["lat"], loc[count]["lng"]);
 
+				// filter through location to get location of people
+				for (count=0; count < loc['people'].length; count++) {
+					console.log(loc['people'][count]['lat'])
+					//loc_lat = loc[theKeys[count]["lat"]];
+					//loc_long = loc[theKeys[count]["lng"]];
+					pointPos = new google.maps.LatLng(loc['people'][count]['lat'], loc['people'][count]['lng']);
 
 					var point = new google.maps.Marker({ //marker
 						position: pointPos,
-						title: loc[count]["login"]
+						title: loc['people'][count]['login']
 					});
+
+					console.log(point)
 
 					points.push(point);
 
 					if (marker == point) {
 						continue;
 					}
-
-					points[count].setMap(map);			
-						
-					google.maps.event.addListener(marker, points[count], 'mouseup', function() {
+					points[count].setMap(map);		
+							
+					google.maps.event.addListener(points[count], 'mouseup', function() {
 						infowindow.setContent(this.title);
 						infowindow.open(map, this);
 					});
 
-					google.maps.event.addListener(marker, points[count], 'mousedown', function() {
+					google.maps.event.addListener(points[count], 'mousedown', function() {
 						infowindow.close();
 					});	
 				}	
+					
 
 			}
 
