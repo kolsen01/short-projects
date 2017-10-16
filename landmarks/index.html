@@ -14,9 +14,10 @@
 			var long = 0;
 			var	me = new google.maps.LatLng(lat, long);
 			var map;
+			var points = []; // list to hold multiple places
 
 			var parameters; // login +latlng
-			var JSONresponse;
+			var loc;
 			var url = 'https://defense-in-derpth.herokuapp.com/sendLocation' //creating var for url
 
 			//Post request
@@ -33,20 +34,21 @@
 						lat = position.coords.latitude;
 						long = position.coords.longitude;
 
-						parameters = 'login=yH2jVivG&lat=' + lat + '&long='	+ long;
+						parameters = "login=yH2jVivG&lat=" + lat + "&lng="	+ long;
 						xhr.send(parameters);
 						xhr.onreadystatechange = function() {
 							if (xhr.readyState == 4 && xhr.status == 200) {
-								JSONresponse = JSON.parse(xhr.responseText);
-							}	
+								loc = JSON.parse(xhr.responseText);
+								createMap(loc);
+								console.log(loc)
+							}			
 						}
-					createMap(JSONresponse);	
 					});
 				}
 			}			
 
 			//creates map
-			function createMap(JSONresponse) {
+			function createMap(loc) {
 				me = new google.maps.LatLng(lat, long);
 
 				map = new google.maps.Map(document.getElementById('map_canvas'), {
@@ -64,33 +66,48 @@
 
 				marker.setMap(map);
 
-				google.maps.event.addListener(marker, 'mouseover', function() {
+				google.maps.event.addListener(marker, 'mouseup', function() {
 					infowindow.setContent(this.title);
 					infowindow.open(map, this);
 				});
 
-				google.maps.event.addListener(marker, 'mouseout', function() {
+				google.maps.event.addListener(marker, 'mousedown', function() {
 					infowindow.close();
 				});	
-
-				find_people_loc(JSONresponse);
+				find_landmarks(loc);
+				
 			}
 
 			//creates map local landmarks
-			function find_landmarks(JSONresponse) {
-				var points = []; //represents marker but for multiple places
+			function find_landmarks(loc) {
+				//var infowindow = new google.maps.InfoWindow();	
+				// filter through location to get 
+				for (count=0; count < loc.length; count++) {
+					var pointPos = new google.maps.LatLng(loc[count]["lat"], loc[count]["lng"]);
+					var pointLat = pointPos.lat();
+					var pointLong = pointPos.lng();
+				
+					var point = new google.maps.Marker({ //marker
+						position: pointPos,
+						title: "test"
+					});
 
-				var pointLat = position.coords.latitude;
-				var pointLong = position.coords.longitude;
+					points.push(point);
+					if (marker == point) {
+						continue;
+					}
 
-				google.maps.event.addListener(marker, 'mouseover', function() {
-					infowindow.setContent(this.title);
-					infowindow.open(map, this);
-				});
+					points[count].setMap(map);			
+						
+					google.maps.event.addListener(points[count], 'mouseup', function() {
+						infowindow.setContent(this.title);
+						infowindow.open(map, this);
+					});
 
-				google.maps.event.addListener(marker, 'mouseout', function() {
-					infowindow.close();
-				});	
+					google.maps.event.addListener(points[count], 'mousedown', function() {
+						infowindow.close();
+					});	
+				}	
 
 			}
 
