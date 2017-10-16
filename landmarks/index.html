@@ -17,7 +17,8 @@
 			var	me = new google.maps.LatLng(lat, long);
 			var pointPos = new google.maps.LatLng(loc_lat, loc_long);
 			var map;
-			var points = []; // list to hold multiple places
+			var points = []; // list to hold array of people
+			var points_land = []; //list to hold array of landmarks
 
 			var parameters; // login +latlng
 			var loc;
@@ -78,20 +79,14 @@
 					infowindow.close();
 				});	
 
-
-				// filter through location to get location of people
+				// filter through .people to get location of people
 				for (count=0; count < loc['people'].length; count++) {
-					console.log(loc['people'][count]['lat'])
-					//loc_lat = loc[theKeys[count]["lat"]];
-					//loc_long = loc[theKeys[count]["lng"]];
 					pointPos = new google.maps.LatLng(loc['people'][count]['lat'], loc['people'][count]['lng']);
 
 					var point = new google.maps.Marker({ //marker
 						position: pointPos,
 						title: loc['people'][count]['login']
-					});
-
-					console.log(point)
+					});	
 
 					points.push(point);
 
@@ -109,8 +104,29 @@
 						infowindow.close();
 					});	
 				}	
-					
 
+				// filter through .location to get location of landmarks
+				for (count=0; count < loc['landmarks'].length; count++) {
+						var landmark_pos = new google.maps.LatLng(loc['landmarks'][count]['geometry']['coordinates'][1], loc['landmarks'][count]['geometry']['coordinates'][0]);	
+
+					var point_land = new google.maps.Marker({ //marker
+						position: landmark_pos,
+						title: loc['landmarks'][count]['properties']['Landmark_Name']
+					});	
+
+					points_land.push(point_land);
+
+					points_land[count].setMap(map);		
+							
+					google.maps.event.addListener(points_land[count], 'mouseup', function() {
+						infowindow.setContent(this.title);
+						infowindow.open(map, this);
+					});
+
+					google.maps.event.addListener(points_land[count], 'mousedown', function() {
+						infowindow.close();
+					});					
+				}			
 			}
 
 			//init, calls mylocation()
