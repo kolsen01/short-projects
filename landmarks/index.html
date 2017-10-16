@@ -23,6 +23,9 @@
 			var parameters; // login +latlng
 			var loc;
 			var url = 'https://defense-in-derpth.herokuapp.com/sendLocation' //creating var for url
+			var imageMe=  "me.png"
+			var imagePeople = "people.png"
+			var imageLandmark = "landmark.png"
 
 			//Post request
 			var xhr = new XMLHttpRequest();					
@@ -62,10 +65,11 @@
 				});
 
 				map.panTo(me);
-				
+
 				var marker = new google.maps.Marker({ //marker
 					position: me,
-					title: "me"
+					title: "me",
+					"icon": imageMe
 				});
 
 				marker.setMap(map);
@@ -85,14 +89,20 @@
 
 					var point = new google.maps.Marker({ //marker
 						position: pointPos,
-						title: loc['people'][count]['login']
+						title: loc['people'][count]['login'],
+						"icon": imagePeople
 					});	
 
 					points.push(point);
 
-					if (marker == point) {
+					if (loc['people'][count]['login'] == "yH2jVivG") {
 						continue;
 					}
+
+					else if (loc['people'][count-1]['login'] == loc['people'][count]['login']){
+						continue;
+					}
+
 					points[count].setMap(map);		
 							
 					google.maps.event.addListener(points[count], 'mouseup', function() {
@@ -111,7 +121,8 @@
 
 					var point_land = new google.maps.Marker({ //marker
 						position: landmark_pos,
-						title: loc['landmarks'][count]['properties']['Location_Name']
+						title: loc['landmarks'][count]['properties']['Location_Name'],
+						"icon": imageLandmark
 					});	
 
 					points_land.push(point_land);
