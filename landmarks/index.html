@@ -72,10 +72,25 @@
 				google.maps.event.addListener(marker, 'mouseout', function() {
 					infowindow.close();
 				});	
+
+				find_people_loc(JSONresponse);
 			}
 
-			function find_people_loc(JSONresponse) {
-				
+			//creates map local landmarks
+			function find_landmarks(JSONresponse) {
+				var points = []; //represents marker but for multiple places
+
+				var pointLat = position.coords.latitude;
+				var pointLong = position.coords.longitude;
+
+				google.maps.event.addListener(marker, 'mouseover', function() {
+					infowindow.setContent(this.title);
+					infowindow.open(map, this);
+				});
+
+				google.maps.event.addListener(marker, 'mouseout', function() {
+					infowindow.close();
+				});	
 
 			}
 
