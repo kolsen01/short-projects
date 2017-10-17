@@ -26,7 +26,7 @@
 			var imageMe=  "me.png"
 			var imagePeople = "people.png"
 			var imageLandmark = "landmark.png"
-			var d = 0; //distance
+			var d = 0; // distance for calculateDistance
 
 			//Post request
 			var xhr = new XMLHttpRequest();					
@@ -47,7 +47,6 @@
 						xhr.onreadystatechange = function() {
 							if (xhr.readyState == 4 && xhr.status == 200) {
 								loc = JSON.parse(xhr.responseText);
-								console.log(loc)
 								createMap(loc);
 							}			
 						}
@@ -129,14 +128,14 @@
 						var long2 = landmark_pos.lng()
 
 					calculateDistance(lat, long, lat2, long2);	
+
 					var point_land = new google.maps.Marker({ //marker
 						position: landmark_pos,
-						info: "Landmark: " + loc['landmarks'][count]['properties']['Location_Name'] + "<br>" + "Distance: " + d + " miles",
+						info: "Landmark: " + loc['landmarks'][count]['properties']['Details'] + "<br>" + "Distance: " + d + " miles",
 						"icon": imageLandmark
 					});	
 
 					points_land.push(point_land);
-
 					points_land[count].setMap(map);		
 							
 					google.maps.event.addListener(points_land[count], 'mouseup', function() {
@@ -147,19 +146,21 @@
 					google.maps.event.addListener(points_land[count], 'mousedown', function() {
 						infowindow.close();
 					});					
-				}		
-					
+				}					
 			}
 
-			//Calculates distance to people and landmarks
+			//convert to radians
+			//credit to moveable type scripts and stackexchange: Using the Haversine Formula in Javascript
 			Number.prototype.toRadians = function() {
 				return this * Math.PI / 180;
 			}
 
-			function calculateDistance(lat, long, lat2, long2) {
+			//calculates distance to nearby landmarks and people
+			function calculateDistance(lat, long, lat2, long2) { //passes in my 'lat' and my 'long'
 
-				//using Haversine formula found on movable type scripts	and stachexchange
-				var R = 6371e3; // metres
+				//using Haversine formula found on movable type scripts	and stackexchange:Using the Haversine Formula in Javascript
+
+				var R = 6371e3; // radius in meters
 				var φ1 = lat.toRadians();
 				var φ2 = lat2.toRadians();
 				var Δφ = (lat2-lat).toRadians();
