@@ -27,6 +27,8 @@
 			var imagePeople = "people.png"
 			var imageLandmark = "landmark.png"
 			var d = 0; // distance for calculateDistance
+			var closest_dist = []; //distance closest to me for landmarks
+			var min = 0; 
 
 			//Post request
 			var xhr = new XMLHttpRequest();					
@@ -68,14 +70,14 @@
 
 				var marker = new google.maps.Marker({ //marker
 					position: me,
-					title: "me",
+					info: "me" + "<br>" + "Distance: " + me + "miles",
 					"icon": imageMe
 				});
 
 				marker.setMap(map);
 
 				google.maps.event.addListener(marker, 'mouseup', function() {
-					infowindow.setContent(this.title);
+					infowindow.setContent(this.info);
 					infowindow.open(map, this);
 				});
 
@@ -124,29 +126,30 @@
 				// filter through .location to get location of landmarks
 				for (count=0; count < loc['landmarks'].length; count++) {
 						var landmark_pos = new google.maps.LatLng(loc['landmarks'][count]['geometry']['coordinates'][1], loc['landmarks'][count]['geometry']['coordinates'][0]);	
-						var lat2 = landmark_pos.lat()
-						var long2 = landmark_pos.lng()
+						var lat2 = landmark_pos.lat();
+						var long2 = landmark_pos.lng();
 
-					calculateDistance(lat, long, lat2, long2);	
+					calculateDistance(lat, long, lat2, long2);							
 
 					var point_land = new google.maps.Marker({ //marker
 						position: landmark_pos,
-						info: "Landmark: " + loc['landmarks'][count]['properties']['Details'] + "<br>" + "Distance: " + d + " miles",
+						info: "Landmark: " + loc['landmarks'][count]['properties']['Details'],
 						"icon": imageLandmark
 					});	
 
-					points_land.push(point_land);
-					points_land[count].setMap(map);		
+					points_land.push({"name":loc['landmarks'][count]['properties']['Location_Name'], "distance": d});	
+
+					point_land.setMap(map);										
 							
-					google.maps.event.addListener(points_land[count], 'mouseup', function() {
+					google.maps.event.addListener(point_land, 'mouseup', function() {
 						infowindow.setContent(this.info);
 						infowindow.open(map, this);
 					});
 
-					google.maps.event.addListener(points_land[count], 'mousedown', function() {
+					google.maps.event.addListener(point_land, 'mousedown', function() {
 						infowindow.close();
 					});					
-				}					
+				}							
 			}
 
 			//convert to radians
