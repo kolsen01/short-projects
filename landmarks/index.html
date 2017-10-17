@@ -8,6 +8,7 @@
 		<link rel="stylesheet" href="style.css" />
 
 		<script src="https://maps.google.com/maps/api/js?sensor=true"></script>
+		<script src="http://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false"> </script> 
 
 		<script> 
 			var lat = 0;
@@ -27,7 +28,8 @@
 			var imagePeople = "people.png"
 			var imageLandmark = "landmark.png"
 			var d = 0; // distance for calculateDistance
-			var closest_dist = []; //distance closest to me for landmarks
+			var dist_between = 0; //distance closest to me for landmarks
+			var dist_between_miles = 0;
 			var min = 0; 
 
 			//Post request
@@ -67,23 +69,6 @@
 				});
 
 				map.panTo(me);
-
-				var marker = new google.maps.Marker({ //marker
-					position: me,
-					info: "me" + "<br>" + "Distance: " + me + "miles",
-					"icon": imageMe
-				});
-
-				marker.setMap(map);
-
-				google.maps.event.addListener(marker, 'mouseup', function() {
-					infowindow.setContent(this.info);
-					infowindow.open(map, this);
-				});
-
-				google.maps.event.addListener(marker, 'mousedown', function() {
-					infowindow.close();
-				});	
 
 				// filter through .people to get location of people
 				for (count=0; count < loc['people'].length; count++) {
@@ -126,20 +111,19 @@
 				// filter through .location to get location of landmarks
 				for (count=0; count < loc['landmarks'].length; count++) {
 						var landmark_pos = new google.maps.LatLng(loc['landmarks'][count]['geometry']['coordinates'][1], loc['landmarks'][count]['geometry']['coordinates'][0]);	
-						var lat2 = landmark_pos.lat();
-						var long2 = landmark_pos.lng();
+						dist_between = google.maps.geometry.spherical.computeDistanceBetween(me, landmark_pos);
+						dist_between_miles = dist_between *	0.000621371;
 
-					calculateDistance(lat, long, lat2, long2);							
+					points_land.push({"name":loc['landmarks'][count]['properties']['Location_Name'], "distance": dist_between_miles});	
 
 					var point_land = new google.maps.Marker({ //marker
 						position: landmark_pos,
 						info: "Landmark: " + loc['landmarks'][count]['properties']['Details'],
 						"icon": imageLandmark
 					});	
+					point_land.setMap(map);	
 
-					points_land.push({"name":loc['landmarks'][count]['properties']['Location_Name'], "distance": d});	
-
-					point_land.setMap(map);										
+					//point_land.setMap(map);										
 							
 					google.maps.event.addListener(point_land, 'mouseup', function() {
 						infowindow.setContent(this.info);
@@ -148,8 +132,28 @@
 
 					google.maps.event.addListener(point_land, 'mousedown', function() {
 						infowindow.close();
-					});					
-				}							
+					});						
+				//compareDist(points_land);
+				}
+				compareDist(points_land);
+				console.log(min)
+				var marker = new google.maps.Marker({ //marker
+					position: me,
+					info: "Me!" + "<br>" + "Closest Landmark: " + min.name + "<br>" + "Distance Away: " + min.distance + " miles",
+					"icon": imageMe
+				});
+
+				marker.setMap(map);
+
+				google.maps.event.addListener(marker, 'mouseup', function() {
+					infowindow.setContent(this.info);
+					infowindow.open(map, this);
+				});
+
+				google.maps.event.addListener(marker, 'mousedown', function() {
+					infowindow.close();
+				});		
+									
 			}
 
 			//convert to radians
@@ -186,6 +190,17 @@
 				body.innerHTML = "<h3> Loading ... </h3>";
 				mylocation();
 			}
+
+			function compareDist(arr) {
+				min = arr[0];
+				for (k=0; k<arr.length; k++){
+					if (arr[k].distance < min.distance) {
+						min = arr[k].distance;
+					}
+				return min;	
+				}
+			}
+
 
 	</script>
 
