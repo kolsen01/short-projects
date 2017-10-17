@@ -96,7 +96,7 @@
 					var point = new google.maps.Marker({ //marker
 						position: pointPos,
 						//title: loc['people'][count]['login'],
-						info: loc['people'][count]['login'] + d,
+						info: "Login: " + loc['people'][count]['login'] + "<br>" + "Distance: " + d + " miles",
 						"icon": imagePeople
 					});	
 
@@ -125,10 +125,13 @@
 				// filter through .location to get location of landmarks
 				for (count=0; count < loc['landmarks'].length; count++) {
 						var landmark_pos = new google.maps.LatLng(loc['landmarks'][count]['geometry']['coordinates'][1], loc['landmarks'][count]['geometry']['coordinates'][0]);	
+						var lat2 = landmark_pos.lat()
+						var long2 = landmark_pos.lng()
 
+					calculateDistance(lat, long, lat2, long2);	
 					var point_land = new google.maps.Marker({ //marker
 						position: landmark_pos,
-						title: loc['landmarks'][count]['properties']['Location_Name'],
+						info: "Landmark: " + loc['landmarks'][count]['properties']['Location_Name'] + "<br>" + "Distance: " + d + " miles",
 						"icon": imageLandmark
 					});	
 
@@ -137,7 +140,7 @@
 					points_land[count].setMap(map);		
 							
 					google.maps.event.addListener(points_land[count], 'mouseup', function() {
-						infowindow.setContent(this.title);
+						infowindow.setContent(this.info);
 						infowindow.open(map, this);
 					});
 
@@ -167,10 +170,10 @@
 				        Math.sin(Δλ/2) * Math.sin(Δλ/2);
 				var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-				d = R * c;
+				var d_meters = R * c;
+				d = d_meters * 0.000621371; //convert to miles
 
 				return d;
-
 			}
 
 			//init, calls mylocation()
