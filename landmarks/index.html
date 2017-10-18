@@ -15,7 +15,7 @@
 			var loc_lat = 0;
 			var loc_long = 0;
 			var	me = new google.maps.LatLng(lat, long); //my location
-			var pointPos = new google.maps.LatLng(loc_lat, loc_long); // location of people
+			var pointPerson = new google.maps.LatLng(loc_lat, loc_long); // location of people
 			var map;
 			var points = []; // list to hold array of people
 			var points_land = []; //list to hold array of landmarks
@@ -28,7 +28,6 @@
 			var imagePeople = "people.png"
 			var imageLandmark = "landmark.png"
 
-			var d = 0; // distance for calculateDistance
 			var dist_between = 0; //distance closest to me for landmarks
 			var dist_between_miles = 0;
 			var min = 0; 
@@ -73,13 +72,13 @@
 
 				// filter through .people to get location of people
 				for (count=0; count < loc['people'].length; count++) {
-					pointPos = new google.maps.LatLng(loc['people'][count]['lat'], loc['people'][count]['lng']);
+					pointPerson = new google.maps.LatLng(loc['people'][count]['lat'], loc['people'][count]['lng']);
 
-					var dist_between = google.maps.geometry.spherical.computeDistanceBetween(me, pointPos);
+					var dist_between = google.maps.geometry.spherical.computeDistanceBetween(me, pointPerson);
 					var dist_between_miles = dist_between *	0.000621371;
 
 					var point = new google.maps.Marker({ //marker
-						position: pointPos,
+						position: pointPerson,
 						info: "Login: " + loc['people'][count]['login'] + "<br>" + "Distance: " + dist_between_miles + " miles",
 						"icon": imagePeople
 					});	
@@ -140,7 +139,7 @@
 					"icon": imageMe
 				});
 
-				marker.setMap(map);
+				marker.setMap(map); //adds 'me' to map
 
 				var line = [
 					{lat: me.lat(), lng: me.lng()},
@@ -161,8 +160,7 @@
 
 				google.maps.event.addListener(marker, 'mousedown', function() {
 					infowindow.close();
-				});	
-									
+				});									
 			}
 
 			function compareDist(arr) {
