@@ -111,11 +111,11 @@
 
 				// filter through .location to get location of landmarks
 				for (count=0; count < loc['landmarks'].length; count++) {
-						var landmark_pos = new google.maps.LatLng(loc['landmarks'][count]['geometry']['coordinates'][1], loc['landmarks'][count]['geometry']['coordinates'][0]);	
+						var landmark_pos = new google.maps.LatLng(loc['landmarks'][count]['geometry']['coordinates'][1], loc['landmarks'][count]['geometry']['coordinates'][0]);
 						dist_between = google.maps.geometry.spherical.computeDistanceBetween(me, landmark_pos);
 						dist_between_miles = dist_between *	0.000621371;
 
-					points_land.push({"name":loc['landmarks'][count]['properties']['Location_Name'], "distance": dist_between_miles});	
+					points_land.push({"name":loc['landmarks'][count]['properties']['Location_Name'], "distance": dist_between_miles, "lat": loc['landmarks'][count]['geometry']['coordinates'][1], "lng":loc['landmarks'][count]['geometry']['coordinates'][0]});	
 
 					var point_land = new google.maps.Marker({ //marker
 						position: landmark_pos,
@@ -131,17 +131,30 @@
 
 					google.maps.event.addListener(point_land, 'mousedown', function() {
 						infowindow.close();
-					});						
-				
+					});										
 				}
+
 				compareDist(points_land);
+
 				var marker = new google.maps.Marker({ //marker
 					position: me,
-					info: "Me!" + "<br>" + "Closest Landmark: " + min.name + "<br>" + "Distance Away: " + min.distance + " miles",
+					info: "<h4>Me!</h4>" + "<br>" + "Closest Landmark: " + min.name + "<br>" + "Distance Away: " + min.distance + " miles",
 					"icon": imageMe
 				});
 
 				marker.setMap(map);
+
+				var line = [
+					{lat: me.lat(), lng: me.lng()},
+					{lat: min.lat, lng: min.lng}
+				];  
+
+			    var polyline = new google.maps.Polyline({     
+			        path: line,    
+			        strokeColor: "#FF0000"
+			    }); 
+
+			    polyline.setMap(map);  
 
 				google.maps.event.addListener(marker, 'mouseup', function() {
 					infowindow.setContent(this.info);
@@ -150,7 +163,7 @@
 
 				google.maps.event.addListener(marker, 'mousedown', function() {
 					infowindow.close();
-				});		
+				});	
 									
 			}
 
@@ -181,7 +194,7 @@
 
 				return d;
 			}
-			
+
 			function compareDist(arr) {
 				min = arr[0];
 				for (k=0; k<arr.length; k++){
@@ -198,9 +211,6 @@
 				body.innerHTML = "<h3> Loading ... </h3>";
 				mylocation();
 			}
-
-
-
 
 	</script>
 
