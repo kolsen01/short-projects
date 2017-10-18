@@ -7,7 +7,6 @@
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 		<link rel="stylesheet" href="style.css" />
 
-		<script src="https://maps.google.com/maps/api/js?sensor=true"></script>
 		<script src="http://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false"> </script> 
 
 		<script> 
@@ -15,14 +14,14 @@
 			var long = 0;
 			var loc_lat = 0;
 			var loc_long = 0;
-			var	me = new google.maps.LatLng(lat, long);
-			var pointPos = new google.maps.LatLng(loc_lat, loc_long);
+			var	me = new google.maps.LatLng(lat, long); //my location
+			var pointPos = new google.maps.LatLng(loc_lat, loc_long); // location of people
 			var map;
 			var points = []; // list to hold array of people
 			var points_land = []; //list to hold array of landmarks
 
 			var parameters; // login +latlng
-			var loc;
+			var loc; //JSON response
 			var url = 'https://defense-in-derpth.herokuapp.com/sendLocation' //creating var for url
 
 			var imageMe=  "me.png"
@@ -60,7 +59,7 @@
 				}
 			}			
 
-			//creates map
+			//creates map; places people, landmarks, me, and polyline on map
 			function createMap(loc) {
 				me = new google.maps.LatLng(lat, long);
 
@@ -76,14 +75,12 @@
 				for (count=0; count < loc['people'].length; count++) {
 					pointPos = new google.maps.LatLng(loc['people'][count]['lat'], loc['people'][count]['lng']);
 
-					var lat2=pointPos.lat();
-					var long2=pointPos.lng();
-
-					calculateDistance(lat, long, lat2, long2);	
+					var dist_between = google.maps.geometry.spherical.computeDistanceBetween(me, pointPos);
+					var dist_between_miles = dist_between *	0.000621371;
 
 					var point = new google.maps.Marker({ //marker
 						position: pointPos,
-						info: "Login: " + loc['people'][count]['login'] + "<br>" + "Distance: " + d + " miles",
+						info: "Login: " + loc['people'][count]['login'] + "<br>" + "Distance: " + dist_between_miles + " miles",
 						"icon": imagePeople
 					});	
 
@@ -112,14 +109,14 @@
 				// filter through .location to get location of landmarks
 				for (count=0; count < loc['landmarks'].length; count++) {
 						var landmark_pos = new google.maps.LatLng(loc['landmarks'][count]['geometry']['coordinates'][1], loc['landmarks'][count]['geometry']['coordinates'][0]);
-						dist_between = google.maps.geometry.spherical.computeDistanceBetween(me, landmark_pos);
-						dist_between_miles = dist_between *	0.000621371;
+						var dist_between = google.maps.geometry.spherical.computeDistanceBetween(me, landmark_pos);
+						var dist_between_miles = dist_between *	0.000621371;
 
 					points_land.push({"name":loc['landmarks'][count]['properties']['Location_Name'], "distance": dist_between_miles, "lat": loc['landmarks'][count]['geometry']['coordinates'][1], "lng":loc['landmarks'][count]['geometry']['coordinates'][0]});	
 
 					var point_land = new google.maps.Marker({ //marker
 						position: landmark_pos,
-						info: "Landmark: " + loc['landmarks'][count]['properties']['Details'],
+						info: loc['landmarks'][count]['properties']['Details'],
 						"icon": imageLandmark
 					});	
 					point_land.setMap(map);											
@@ -134,9 +131,10 @@
 					});										
 				}
 
+				//compares landmark distances to me and assigns shortest value to min
 				compareDist(points_land);
 
-				var marker = new google.maps.Marker({ //marker
+				var marker = new google.maps.Marker({ //marker 'me'
 					position: me,
 					info: "<h4>Me!</h4>" + "<br>" + "Closest Landmark: " + min.name + "<br>" + "Distance Away: " + min.distance + " miles",
 					"icon": imageMe
@@ -149,7 +147,7 @@
 					{lat: min.lat, lng: min.lng}
 				];  
 
-			    var polyline = new google.maps.Polyline({     
+			    var polyline = new google.maps.Polyline({  //creates polyline from me to closest landmark   
 			        path: line,    
 			        strokeColor: "#FF0000"
 			    }); 
@@ -165,34 +163,6 @@
 					infowindow.close();
 				});	
 									
-			}
-
-			//convert to radians
-			//credit to moveable type scripts and stackexchange: Using the Haversine Formula in Javascript
-			Number.prototype.toRadians = function() {
-				return this * Math.PI / 180;
-			}
-
-			//calculates distance to nearby landmarks and people
-			function calculateDistance(lat, long, lat2, long2) { //passes in my 'lat' and my 'long'
-
-				//using Haversine formula found on movable type scripts	and stackexchange:Using the Haversine Formula in Javascript
-
-				var R = 6371e3; // radius in meters
-				var φ1 = lat.toRadians();
-				var φ2 = lat2.toRadians();
-				var Δφ = (lat2-lat).toRadians();
-				var Δλ = (long2-long).toRadians();
-
-				var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-				        Math.cos(φ1) * Math.cos(φ2) *
-				        Math.sin(Δλ/2) * Math.sin(Δλ/2);
-				var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-				var d_meters = R * c;
-				d = d_meters * 0.000621371; //convert to miles
-
-				return d;
 			}
 
 			function compareDist(arr) {
