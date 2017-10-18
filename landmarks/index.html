@@ -10,8 +10,8 @@
 		<script src="http://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false"> </script> 
 
 		<script> 
-			var lat = 0;
-			var long = 0;
+			var lat = 0; //mylat
+			var long = 0; //mylng
 			var loc_lat = 0;
 			var loc_long = 0;
 			var	me = new google.maps.LatLng(lat, long); //my location
@@ -24,13 +24,12 @@
 			var loc; //JSON response
 			var url = 'https://defense-in-derpth.herokuapp.com/sendLocation' //creating var for url
 
+			//images for icons
 			var imageMe=  "me.png"
 			var imagePeople = "people.png"
 			var imageLandmark = "landmark.png"
 
-			var dist_between = 0; //distance closest to me for landmarks
-			var dist_between_miles = 0;
-			var min = 0; 
+			var min_dist = 0; //distance closest to me for landmarks
 
 			//Post request
 			var xhr = new XMLHttpRequest();					
@@ -74,16 +73,15 @@
 				for (count=0; count < loc['people'].length; count++) {
 					pointPerson = new google.maps.LatLng(loc['people'][count]['lat'], loc['people'][count]['lng']);
 
-					var dist_between = google.maps.geometry.spherical.computeDistanceBetween(me, pointPerson);
-					var dist_between_miles = dist_between *	0.000621371;
+					var dist_between = (google.maps.geometry.spherical.computeDistanceBetween(me, pointPerson)* 0.000621371); //dist b/w two points
 
 					var point = new google.maps.Marker({ //marker
 						position: pointPerson,
-						info: "Login: " + loc['people'][count]['login'] + "<br>" + "Distance: " + dist_between_miles + " miles",
+						info: "Login: " + loc['people'][count]['login'] + "<br>" + "Distance: " + dist_between + " miles",
 						"icon": imagePeople
 					});	
 
-					points.push(point);
+					points.push(point); //adds new point to array
 
 					if (loc['people'][count]['login'] == "yH2jVivG") {
 						continue;
@@ -93,7 +91,7 @@
 						continue;
 					}
 
-					points[count].setMap(map);		
+					points[count].setMap(map); //adds points to map	
 							
 					google.maps.event.addListener(points[count], 'mouseup', function() {
 						infowindow.setContent(this.info);
@@ -108,17 +106,17 @@
 				// filter through .location to get location of landmarks
 				for (count=0; count < loc['landmarks'].length; count++) {
 						var landmark_pos = new google.maps.LatLng(loc['landmarks'][count]['geometry']['coordinates'][1], loc['landmarks'][count]['geometry']['coordinates'][0]);
-						var dist_between = google.maps.geometry.spherical.computeDistanceBetween(me, landmark_pos);
-						var dist_between_miles = dist_between *	0.000621371;
 
-					points_land.push({"name":loc['landmarks'][count]['properties']['Location_Name'], "distance": dist_between_miles, "lat": loc['landmarks'][count]['geometry']['coordinates'][1], "lng":loc['landmarks'][count]['geometry']['coordinates'][0]});	
+						var dist_between = (google.maps.geometry.spherical.computeDistanceBetween(me, landmark_pos))*0.000621371; //dist b/w two points
+
+					points_land.push({"name":loc['landmarks'][count]['properties']['Location_Name'], "distance": dist_between, "lat": loc['landmarks'][count]['geometry']['coordinates'][1], "lng":loc['landmarks'][count]['geometry']['coordinates'][0]});	//adds landmark info into array for use in compareDist and polyline
 
 					var point_land = new google.maps.Marker({ //marker
 						position: landmark_pos,
 						info: loc['landmarks'][count]['properties']['Details'],
 						"icon": imageLandmark
 					});	
-					point_land.setMap(map);											
+					point_land.setMap(map);	//adds point to map										
 							
 					google.maps.event.addListener(point_land, 'mouseup', function() {
 						infowindow.setContent(this.info);
@@ -130,12 +128,12 @@
 					});										
 				}
 
-				//compares landmark distances to me and assigns shortest value to min
+				//compares landmark distances to me and assigns shortest value to min_dist
 				compareDist(points_land);
 
 				var marker = new google.maps.Marker({ //marker 'me'
 					position: me,
-					info: "<h4>Me!</h4>" + "<br>" + "Closest Landmark: " + min.name + "<br>" + "Distance Away: " + min.distance + " miles",
+					info: "<h4>Me!</h4>" + "<br>" + "Closest Landmark: " + min_dist.name + "<br>" + "Distance Away: " + min_dist.distance + " miles",
 					"icon": imageMe
 				});
 
@@ -143,7 +141,7 @@
 
 				var line = [
 					{lat: me.lat(), lng: me.lng()},
-					{lat: min.lat, lng: min.lng}
+					{lat: min_dist.lat, lng: min_dist.lng}
 				];  
 
 			    var polyline = new google.maps.Polyline({  //creates polyline from me to closest landmark   
@@ -163,13 +161,14 @@
 				});									
 			}
 
-			function compareDist(arr) {
-				min = arr[0];
-				for (k=0; k<arr.length; k++){
-					if (arr[k].distance < min.distance) {
-						min = arr[k].distance;
+			//passing in points_land array and going through to compare values
+			function compareDist(array) {
+				min_dist = array[0];
+				for (k=0; k<array.length; k++){
+					if (array[k].distance < min_dist.distance) {
+						min_dist = array[k].distance; //reassigning min to be lowest val
 					}
-				return min;	
+				return min_dist;	
 				}
 			}			
 
