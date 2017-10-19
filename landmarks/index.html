@@ -7,7 +7,7 @@
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 		<link rel="stylesheet" href="style.css" />
 
-		<script src="http://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false"> </script> 
+		<script src="http://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false"> </script>  
 
 		<script> 
 			var lat = 0; //mylat
@@ -24,8 +24,8 @@
 			var loc; //JSON response
 			var url = 'https://defense-in-derpth.herokuapp.com/sendLocation' //creating var for url
 
-			//images for icons
-			var imageMe=  "me.png"
+			//images for icons, found on google 
+			var imageMe=  "me.png" 
 			var imagePeople = "people.png"
 			var imageLandmark = "landmark.png"
 
@@ -42,15 +42,15 @@
 			function mylocation() {
 				if (navigator.geolocation) {	
 					navigator.geolocation.getCurrentPosition(function(position) {
-						lat = position.coords.latitude;
-						long = position.coords.longitude;
+						lat = position.coords.latitude; //my latitude
+						long = position.coords.longitude; //my longitude
 
 						parameters = "login=yH2jVivG&lat=" + lat + "&lng="	+ long;
 						xhr.send(parameters);
 						xhr.onreadystatechange = function() {
 							if (xhr.readyState == 4 && xhr.status == 200) {
 								loc = JSON.parse(xhr.responseText);
-								createMap(loc);
+								createMap(loc); //calls fnc
 							}			
 						}
 					});
@@ -73,11 +73,11 @@
 				for (count=0; count < loc['people'].length; count++) {
 					pointPerson = new google.maps.LatLng(loc['people'][count]['lat'], loc['people'][count]['lng']);
 
-					var dist_between = (google.maps.geometry.spherical.computeDistanceBetween(me, pointPerson)* 0.000621371); //dist b/w two points
+					var dist_between = (google.maps.geometry.spherical.computeDistanceBetween(me, pointPerson)* 0.000621371);  //dist b/w two points; followed google.maps api https://developers.google.com/maps/documentation/javascript/reference#spherical 
 
 					var point = new google.maps.Marker({ //marker
 						position: pointPerson,
-						info: "Login: " + loc['people'][count]['login'] + "<br>" + "Distance: " + dist_between + " miles",
+						info: "<h6> Login: </h6>" + loc['people'][count]['login'] + "<br>" + "<h6> Distance: </h6>" + dist_between + " miles",
 						"icon": imagePeople
 					});	
 
@@ -107,7 +107,7 @@
 				for (count=0; count < loc['landmarks'].length; count++) {
 						var landmark_pos = new google.maps.LatLng(loc['landmarks'][count]['geometry']['coordinates'][1], loc['landmarks'][count]['geometry']['coordinates'][0]);
 
-						var dist_between = (google.maps.geometry.spherical.computeDistanceBetween(me, landmark_pos))*0.000621371; //dist b/w two points
+						var dist_between = (google.maps.geometry.spherical.computeDistanceBetween(me, landmark_pos))*0.000621371; //dist b/w two points; followed google.maps api https://developers.google.com/maps/documentation/javascript/reference#spherical 
 
 					points_land.push({"name":loc['landmarks'][count]['properties']['Location_Name'], "distance": dist_between, "lat": loc['landmarks'][count]['geometry']['coordinates'][1], "lng":loc['landmarks'][count]['geometry']['coordinates'][0]});	//adds landmark info into array for use in compareDist and polyline
 
@@ -140,8 +140,8 @@
 				marker.setMap(map); //adds 'me' to map
 
 				var line = [
-					{lat: me.lat(), lng: me.lng()},
-					{lat: min_dist.lat, lng: min_dist.lng}
+					{lat: me.lat(), lng: me.lng()}, // lat and long from var me defined at beginning of fnc.
+					{lat: min_dist.lat, lng: min_dist.lng} //min lat and long det. from compareDist() fnc.
 				];  
 
 			    var polyline = new google.maps.Polyline({  //creates polyline from me to closest landmark   
@@ -162,8 +162,9 @@
 			}
 
 			//passing in points_land array and going through to compare values
+			// if next element in array is less, reassign this value to min_dist  
 			function compareDist(array) {
-				min_dist = array[0];
+				min_dist = array[0]; //setting first value in array to min_dist
 				for (k=0; k<array.length; k++){
 					if (array[k].distance < min_dist.distance) {
 						min_dist = array[k].distance; //reassigning min to be lowest val
