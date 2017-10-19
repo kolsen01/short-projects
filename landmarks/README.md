@@ -17,4 +17,6 @@
 	7. Displays your location on the map with unique marker. Clicking on marker will display the name of the closest historic landmark from where you are including miles away in an info window.
 	8. Renders a polyline connecting your current location and the closest historic landmark from where you are. The polyline can be any visible color.
 
+##### Credit: Followed google maps API documentation and examples from github course account. 	
+
 ##### Discussed spherical geometry techniques for finding distance with Frances DeFreitas. 
