@@ -77,7 +77,7 @@
 
 					var point = new google.maps.Marker({ //marker
 						position: pointPerson,
-						info: "<h6> Login: </h6>" + loc['people'][count]['login'] + "<br>" + "<h6> Distance: </h6>" + dist_between + " miles",
+						info: "<h4> Login: </h4>" + loc['people'][count]['login'] + "<br>" + "<h4> Distance: </h4>" + dist_between + " miles",
 						"icon": imagePeople
 					});	
 
@@ -133,7 +133,7 @@
 
 				var marker = new google.maps.Marker({ //marker 'me'
 					position: me,
-					info: "<h4>Me!</h4>" + "<br>" + "Closest Landmark: " + min_dist.name + "<br>" + "Distance Away: " + min_dist.distance + " miles",
+					info: "<h4>Me!</h4>" + "<br>" + "<h4> Closest Landmark: </h4>" + min_dist.name + "<br>" + "<h4> Distance Away: </h4>" + min_dist.distance + " miles",
 					"icon": imageMe
 				});
 
