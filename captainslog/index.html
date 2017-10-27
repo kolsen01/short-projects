@@ -8,20 +8,24 @@
     <link rel="stylesheet" href="style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
+    var today;
+    var msg;
 
-       function store() {
-            var msg = $('#msg').val();
+        function store() {
+            //today = new Date();
+           // localStorage[new Date().getTime()] = today; 
+
+            msg = $('#msg').val();
             localStorage[new Date().getTime()] = msg;
             load();
         }    
 
-        function load(){   
-            var today = Date();
-            $('#log').innerhtml = today;
-
+        function load(){  
             output = "";
             for (key in localStorage) {
-                output = output + "<p>" + today + " - " + localStorage[key] + "</p>\n";
+                today = new Date();
+                $('#log').innerhtml = today; 
+                output = "<p>" + today + " - " + localStorage[key] + output + "</p>\n";
                } 
 
             $("#log").html(output);
