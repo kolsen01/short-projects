@@ -8,35 +8,32 @@
     <link rel="stylesheet" href="style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
-    var today;
     var msg;
+    var output = "";
 
-        function store() {
-            //today = new Date();
-           // localStorage[new Date().getTime()] = today; 
-
+  /*      function store() {
             msg = $('#msg').val();
             localStorage[new Date().getTime()] = msg;
-            load();
+
         }    
-
-        function load(){  
-            output = "";
-            for (key in localStorage) {
-                today = new Date();
-                $('#log').innerhtml = today; 
-                output = "<p>" + today + " - " + localStorage[key] + output + "</p>\n";
-               } 
-
-            $("#log").html(output);
-        }      
+*/
+            
+        $(document).ready(function(){
+            $('#msg').keypress(function(key) {
+                if(key.which == 13) {
+                    var time = new Date();
+                    var output = this.value;
+                    $("#log").html("<p>" + time + " - " + output + "</p>\n");  
+                }
+            });           
+        });       
 
     </script>
 </head>
 
 <body>
     <h1>Captain's Log</h1>
-    <h3>New entry: <input type="text" id="msg" name="msg" size="30" onchange="store()" /></h3>
+    <h3>New entry: <input type="text" id="msg" name="msg" size="30" /></h3>
     <div id="log"></div>
 </body>
 </html>
