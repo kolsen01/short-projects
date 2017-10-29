@@ -8,23 +8,24 @@
     <link rel="stylesheet" href="style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
-    var msg;
     var output = "";
-
-  /*      function store() {
-            msg = $('#msg').val();
-            localStorage[new Date().getTime()] = msg;
-
-        }    
-*/
+    var msgs; 
             
         $(document).ready(function(){
             $('#msg').keypress(function(key) {
                 if(key.which == 13) {
                     var time = new Date();
                     var output = this.value;
-                    $("#log").html("<p>" + time + " - " + output + "</p>\n");  
-                }
+                    var record = "<p>" + time + " - " + output + "</p>\n";
+                    localStorage[new Date().getTime()] = record;
+                    for (key in localStorage) {
+                       // msgs = "<p>" + time + " - " + output + "</p>\n" + localStorage[key];
+                       // msgs = record + localStorage[key];
+                       // console.log(localStorage[key])
+                        $("#log").html(localStorage[key]);
+                    }
+                } 
+                
             });           
         });       
 
