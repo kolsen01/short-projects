@@ -1,3 +1,14 @@
 h1 {
-	background-position: center;
+	text-align: center;
+	font-family: Helvetica;
+}
+
+body {
+	text-align: center;
+	font-family: Helvetica;
+	background-color: #E3EBF0;
+}
+
+input {
+	outline-style: dotted;
 }
