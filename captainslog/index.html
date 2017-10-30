@@ -8,22 +8,22 @@
     <link rel="stylesheet" href="style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
-    var output = "";
-    var msgs; 
+    var record = ""; // holds the value for localStorage
             
-        $(document).ready(function(){
-            $('#msg').keypress(function(key) {
-                if(key.which == 13) {
+        $(document).ready(function() {
+            for (key in localStorage) {
+                record = localStorage.getItem(key);
+                $("#log").prepend("<p>" + key + " - " + record + "<p>"); // prints out localStorage
+            }
+
+            $('#msg').keypress(function(e) {
+                if(e.which == 13) {
                     var time = new Date();
                     var output = this.value;
-                    var record = "<p>" + time + " - " + output + "</p>\n";
-                    localStorage[new Date().getTime()] = record;
-                    for (key in localStorage) {
-                       // msgs = "<p>" + time + " - " + output + "</p>\n" + localStorage[key];
-                       // msgs = record + localStorage[key];
-                       // console.log(localStorage[key])
-                        $("#log").html(localStorage[key]);
-                    }
+
+                    localStorage.setItem(time,output); // stores time and output             
+                    msgs = "<p>" + time + " - " + output + "</p>\n";
+                    $("#log").prepend(msgs);                     
                 } 
                 
             });           
