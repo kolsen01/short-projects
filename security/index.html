@@ -10,16 +10,30 @@
 	<body>
 
 	<h1> Introduction </h1>
-		<p> The product is a web application that renders a location map using client and server side data. Unforutnatley, the web application is riddled with security and privacy vulnerabilities. I am hired to resolve the security and privacy issues in the applications.</p> 
+		<p> The product is a web application that renders a location map using client and server side data. Unforutnatley, the web application is riddled with security and privacy vulnerabilities. I am hired to resolve the security and privacy issues in the applications. For reference, the following is the link to the webb application we are testing: https://landmark-locator.herokuapp.com/ . </p> 
 		<br>
 
 	<h1> Methodology </h1>
+	<p> The first step is to clean out any past documents in the collection (MongoDB database) for checkins. This allows for the following to be executed: </p> 
+		<ul> <li> 
+			1. Bypassing Restrictions on Input Choices
+			2. Cross Site Scripting (XSS)
+			3. Privacy check
+		</li> </ul>
 
 	<h1> Abstract of findings </h1>
+		<p> There were several issues found. First, Cross Site Scripting (XSS), privacy for location and obtaining all logins using a loophole in MongoDB (	-privacy issue: https://landmark-locator.herokuapp.com/checkins.json?login[$ne]=kolsen ), hard code attacking using curl --> application errors instead of [] for no lat/lng and no login. Mongo injections </p>
 
 	<h1> Issues found </h1>
 		<p> technical analysis of issues found </p> 
-		<br>
+		<br> 
+
+		<ul> <li>
+			1. Privacy
+			2. XSS
+			3. MongoDB Injections
+		</li> </ul>	
+
 
 	<h1> Conclusion </h1>
 
