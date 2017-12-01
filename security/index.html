@@ -8,36 +8,36 @@
 	</head>
 
 	<body>
+	<h1> Security Report </h1>
+	<h2> Introduction </h2>
+		<p> The product is a web application that renders a location map using client and server side data. Unforutnatley, the web application is riddled with security and privacy vulnerabilities. I am hired to resolve the security and privacy issues in the applications. For reference, the following is the link to the web application we are testing: https://landmark-locator.herokuapp.com/ . </p> 
 
-	<h1> Introduction </h1>
-		<p> The product is a web application that renders a location map using client and server side data. Unforutnatley, the web application is riddled with security and privacy vulnerabilities. I am hired to resolve the security and privacy issues in the applications. For reference, the following is the link to the webb application we are testing: https://landmark-locator.herokuapp.com/ . </p> 
-		<br>
-
-	<h1> Methodology </h1>
+	<h2> Methodology </h2>
 	<p> The first step is to clean out any past documents in the collection (MongoDB database) for checkins. This allows for the following to be executed: </p> 
 		<ul> <li> 
 			1. Bypassing Restrictions on Input Choices
-			2. Cross Site Scripting (XSS)
+			2. Testing Cross Site Scripting (XSS): 
+				<p> Through injecting a script with curl, I will test if a response with be triggered from the web broswer. If it does, then there is a vulnerability in the web application. </p>
 			3. Privacy check
 		</li> </ul>
 
-	<h1> Abstract of findings </h1>
-		<p> There were several issues found. First, Cross Site Scripting (XSS), privacy for location and obtaining all logins using a loophole in MongoDB (	-privacy issue: https://landmark-locator.herokuapp.com/checkins.json?login[$ne]=kolsen ), hard code attacking using curl --> application errors instead of [] for no lat/lng and no login. Mongo injections </p>
+	<h2> Abstract of findings </h2>
+		<p> The following vulnerabilities were found: Cross Site Scripting (XSS), privacy errors for location and logins, and bypassing restrictions on input choices. For XSS, scripts were injected to login using curl. Specifically, adding an 'alert' popup and window location redirection was inserted to login via script. For privacy, there were two errors found. Changing the query string on the checkins.json page can display all logins of all users who have checked in and their location. Furthermore, the location of the user is not private. Testing input parameters, the web applicatoin resulted in an application error when not all of the parameters were satisfied. </p>
 
-	<h1> Issues found </h1>
+	<h2> Issues found </h2>
 		<p> technical analysis of issues found </p> 
 		<br> 
 
 		<ul> <li>
 			1. Privacy
-			2. XSS
-			3. MongoDB Injections
+			2. XSS:  script yielded an alert to pop up on web app and inserting a new window location caused the web app to redirect to that web page.
+			3. MongoDB Injections: -privacy issue: https://landmark-locator.herokuapp.com/checkins.json?login[$ne]=kolsen
 		</li> </ul>	
 
 
-	<h1> Conclusion </h1>
+	<h2> Conclusion </h2>
 
-	<h1> References </h1>
+	<h2> References </h2>
 
 	</body>
 
