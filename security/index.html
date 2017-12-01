@@ -31,7 +31,7 @@
 			<li class="list"> Page Found: </li>
 				<p> Checkins (https://landmark-locator.herokuapp.com/) </p> 
 			<li class="list"> Severity of Issue: High </li>
-				<p> An attacker could exploit this vulnerabilty within the web application to send the victim malicious script/data or redirect the victim to another page that has malicious script/data. </p>
+				<p> An attacker could exploit this vulnerabilty within the web application to send the victim malicious script/data or redirect the victim to another page that has malicious script/data. Furthermore, the attacker can steal cookie information, display annoying messages, and present all users with fraudulent web content. </p>
 			<li class="list"> Description: </li> 
 				<p> Injecting an 'alert' script into the login paramter and sending via curl to POST /sendLocation yielded an alert to pop up on web application 'Check-Ins' page (See image below). Furthermore, injecting script to redirect to another webpage into the login paramter and sending via curl to POST /sendLocation resulted in the webpage 'Check-Ins' to redirect to 4chan.org (See image below). </p>
 				<p> <img id="img" src="images/alert_xss_code.png" alt="alert"> </p>
@@ -48,7 +48,7 @@
 			<p> Never trust user input. Add a validator that only recieves login information that has no special characters. This will strip any characters such as < , / , " , ' , and > so that no script, style, or event handlers can be executed. 
 			</ul>
 
-		<li class="list"> Privacy: User Information </li>
+		<li class="list"> Mongo Injection and Privacy: User Information and Location </li>
 			<ul>
 			<li class="list"> Page Found: </li>
 				<p> checkins.json (https://landmark-locator.herokuapp.com/checkins.json) </p>
@@ -61,22 +61,17 @@
 				<p> <img id="img" src="images/privacy_login.png" alt="privacy"></p>
 
 			<li class="list"> Resolution: </li>
-			</ul>
-
-		<li class="list"> Privacy: Location </li>
-			<ul>
-			<li class="list"> Page Found: </li>
-			<li class="list"> Severity of Issue: </li>
-			<li class="list"> Description: </li>
-			<li class="list"> Proof of vulnerability: </li>
-			<li class="list"> Resolution: </li>
+				<p> To resolve this, a web proxy can be used to intercept the request to the server. The proxy can then alter the request from the client to the server such that the JSON response does not reveal any user private information. 
 			</ul>	
 
 		<li class="list"> Application Error </li>
 			<ul>
 			<li class="list"> Page Found: </li>
-			<li class="list"> Severity of Issue: </li>
+				<p> sendLocation (https://landmark-locator.herokuapp.com/sendLocation) </p>
+			<li class="list"> Severity of Issue: Low</li>
+				<p> When inputting the login, lat, lng parameters via curl in terminal, the web application crashes if not all parameteres are satisfied. An 'Application Error' in Heroku suggests a larger internal error with the code. A simple fix in code would resolve this error.  </p>
 			<li class="list"> Description: </li>
+				<p> According to guidelines, the web application should return '[]'. See below for examples of data input and terminal response. </p>
 			<li class="list"> Proof of vulnerability: </li>
 			<li class="list"> Resolution: </li>
 			</ul>
@@ -88,6 +83,7 @@
 	<h2> References </h2>
 		<p> https://www.acunetix.com/websitesecurity/cross-site-scripting/ </p>
 		<p> https://www.owasp.org/index.php/XSS_(Cross_Site_Scripting)_Prevention_Cheat_Sheet </p>
+		<p> http://blog.securelayer7.net/mongodb-security-injection-attacks-with-php/ </p>
 
 	</body>
 
