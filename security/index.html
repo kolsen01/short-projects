@@ -45,7 +45,7 @@
 				<p> <img id="img" src="images/redirect_page.png" alt="redirect notice"></p>
 
 			<li class="list"> Resolution: </li>
-			<p> Never trust user input. Add a validator that only recieves login information that has no special characters. This will strip any characters such as < , / , " , ' , and > so that no script, style, or event handlers can be executed. 
+			<p> Never trust user input. Currently, the code only validates lat and lng. One should add a validator that only recieves login information that has no special characters. This will strip any characters such as < , / , " , ' , and > so that no script, style, or event handlers can be executed. 
 			</ul>
 
 		<li class="list"> Mongo Injection and Privacy: User Information and Location </li>
@@ -68,12 +68,24 @@
 			<ul>
 			<li class="list"> Page Found: </li>
 				<p> sendLocation (https://landmark-locator.herokuapp.com/sendLocation) </p>
-			<li class="list"> Severity of Issue: Low</li>
-				<p> When inputting the login, lat, lng parameters via curl in terminal, the web application crashes if not all parameteres are satisfied. An 'Application Error' in Heroku suggests a larger internal error with the code. A simple fix in code would resolve this error.  </p>
+			<li class="list"> Severity of Issue: Low </li>
+				<p> When inputting the login, lat, lng parameters via curl in terminal, the web application crashes if not all parameteres are satisfied. An 'Application Error' in Heroku suggests a larger internal error with the code. A simple fix in code would resolve this error. There is no large threat of attack, but the web application does not work for the user if all parameters are not entered. </p>
 			<li class="list"> Description: </li>
-				<p> According to guidelines, the web application should return '[]'. See below for examples of data input and terminal response. </p>
+				<p> According to guidelines, the web application should return '{"error":"Whoops, something is wrong with your data!"}' when not all parameters (login, lat, lng) are entered correctly. However, sending via curl in terminal only lat and lng or only login results in an 'Application Error' on Heroku. </p>
 			<li class="list"> Proof of vulnerability: </li>
+				<p> Only lat and lng parameters sent via curl in terminal. </p>
+				<p> <img id="img" src="images/lat&lng.png" alt="lat&lng"></p>
+
+				<p> Only login parameter sent via curl. </p>
+				<p> <img id="img" src="images/login.png" alt="login"></p>
+
+				<p> The same 'Application Error' response seen above was also obtained for when only login and lat or login and lng were sent via curl in terminal. </p>
+
 			<li class="list"> Resolution: </li>
+				<p> Analyzing the code for the app landmark-locator, a variable containing the JSON response {"error":"Whoops, something is wrong with your data!"} should be addded. For the case when the parameter is undefined, there should be a response.send of the varibale containing the JSON. Altering a bit of the original code, see below for the addition of the JSON response.</p>
+				<p> Code including the variable 'error' was added. </p>
+				<p> <img id="img" src="images/error_code.png" alt="error"></p>
+
 			</ul>
 		</ol>	
 
