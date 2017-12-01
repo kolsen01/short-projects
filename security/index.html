@@ -13,15 +13,16 @@
 		<p> The product is a web application that renders a location map using client and server side data. Unforutnatley, the web application is riddled with security and privacy vulnerabilities. I am hired to resolve the security and privacy issues in the applications. For reference, the following is the link to the web application we are testing: https://landmark-locator.herokuapp.com/ . </p> 
 
 	<h2> Methodology </h2>
-	<p> The first step is to clean out any past documents in the collection (MongoDB database) for checkins. This allows for the following to be executed to check for vulnerabilities in the web application: </p> 
+	<p> First, any past documents in the collection (MongoDB database) for checkins were deleted to allow for a clean slate. This allows for the following to be executed to check for vulnerabilities in the web application: </p> 
 		<ol> 
 		<li> Bypassing Restrictions on Input Choices </li>
-		<li> Testing Cross Site Scripting (XSS): Through injecting a script with curl, I will test if a response with be triggered from the web broswer. If it does, then there is a vulnerability in the web application. </li>
+		<li> Testing Cross Site Scripting (XSS) </li>
 		<li> Privacy check for login information and location </li> 
 		</ol>
+	<p> The above vulnerabilities were primarily checked for via curl in terminal. Curl commands vary based on what test was being exexcuted, but input paramters (login, lat, lng) and location of the webpage were changed for each test. The code for the web applicatoin was also viewed to determine any bad programming practices, vulnerabilities, and to suggest recommenations. </p> 	
 
 	<h2> Abstract of Findings </h2>
-		<p> The following vulnerabilities were found: Cross Site Scripting (XSS), privacy errors for location and logins, and bypassing restrictions on input choices. For XSS, scripts were injected to login using curl. Specifically, adding an 'alert' popup and window location redirection was inserted to login via script. Both attacks triggered responses and, therefore, displayed vulnerabilities of the web application. For privacy, there were two errors found. Changing the query string on the checkins.json (checkins.json?login[$ne]=kolsen) page can display all logins of all users who have checked in and their location. This is like a loop hole in MongoDB, where data that is not equal to the login 'kolsen', is returned on the web page, that was not accounted for in the code. The private information of any user who has checked in (location, id, and date checked in) is revealed. Furthermore, the overall location of the user is not private. There is no security authentication for location and thus it can be accessed or viewed by anyone. Testing inputting parameters via curl (login, lat, and lng), the web application crashedwhen not all of the parameters were satisfied. For example, in the cases of no login and no lat/lng, the app resulted in an 'Application Error' on Herokuapp instead of returning '[]'. </p>
+		<p> The following vulnerabilities were found: Cross Site Scripting (XSS), privacy errors for location and logins, and bypassing restrictions on input choices. For XSS, scripts were injected to login using curl. Specifically, adding an 'alert' popup and window location redirection was inserted to login via script. Both attacks triggered responses and, therefore, displayed vulnerabilities of the web application. An attacker could exploit this vulnerabilty within the web application so that the victim would be redirected to another webpage or receive malicious script to the browser. For privacy, there were two errors found. Changing the query string on the checkins.json (checkins.json?login[$ne]=kolsen) page can display all logins of all users who have checked in and their location. This is like a loop hole in MongoDB, where data that is not equal to the login 'kolsen', is returned on the web page, that was not accounted for in the code. The private information of any user who has checked in (location, id, and date checked in) is revealed. Furthermore, the overall location of the user is not private. There is no security authentication for location and thus it can be accessed or viewed by anyone. Testing inputting parameters via curl (login, lat, and lng), the web application crashedwhen not all of the parameters were satisfied. For example, in the cases of no login and no lat/lng, the app resulted in an 'Application Error' on Herokuapp instead of returning '[]'. </p>
 
 	<h2> Issues </h2>
 		<ol> 
@@ -29,12 +30,39 @@
 			<ul>
 			<li class="list"> Page Found: </li>
 				<p> Checkins (https://landmark-locator.herokuapp.com/) </p> 
-			<li class="list"> Severity of Issue: Medium </li>
+			<li class="list"> Severity of Issue: High </li>
+				<p> An attacker could exploit this vulnerabilty within the web application to send the victim malicious script/data or redirect the victim to another page that has malicious script/data. </p>
 			<li class="list"> Description: </li> 
-				<p> Injecting script into the login paramter and sending via curl to POST /sendLocation yielded an alert to pop up on web application 'Checkins'. <img src="images/alert_xss_code"> and inserting a new window location caused the web app to redirect to that web page.</p>
+				<p> Injecting an 'alert' script into the login paramter and sending via curl to POST /sendLocation yielded an alert to pop up on web application 'Check-Ins' page (See image below). Furthermore, injecting script to redirect to another webpage into the login paramter and sending via curl to POST /sendLocation resulted in the webpage 'Check-Ins' to redirect to 4chan.org (See image below). </p>
+				<p> <img id="img" src="images/alert_xss_code.png" alt="alert"> </p>
+				<p> <img id="img" src="images/redirect_code.png" alt="redirect"> </p>
+
 			<li class="list"> Proof of vulnerability: </li>
+				<p> Popup of alert on 'Check-Ins' page (https://landmark-locator.herokuapp.com/). </p>
+				<p> <img id="img" src="images/alert_popup.png" alt="alert notice"></p>
+
+				<p> Redirection of Check-Ins page to 4chan.org </p>
+				<p> <img id="img" src="images/redirect_page.png" alt="redirect notice"></p>
+
+			<li class="list"> Resolution: </li>
+			<p> Never trust user input. Add a validator that only recieves login information that has no special characters. This will strip any characters such as < , / , " , ' , and > so that no script, style, or event handlers can be executed. 
+			</ul>
+
+		<li class="list"> Privacy: User Information </li>
+			<ul>
+			<li class="list"> Page Found: </li>
+				<p> checkins.json (https://landmark-locator.herokuapp.com/checkins.json) </p>
+			<li class="list"> Severity of Issue: High</li>
+				<p> Private information of the user (id, location, and checked-in time) can be revealed to the attacker and exploited. 
+			<li class="list"> Description: </li>
+			<p> Through exploiting MongoDB injections, the query for https://landmark-locator.herokuapp.com/checkins.json can be changed to provide all logins. This is through teh parameter [$ne]=LOGIN where LOGIN is the login that you don't want to be returned. For this test, the the query was changed to checkins.json?login[$ne]=kolsen (LINK: https://landmark-locator.herokuapp.com/checkins.json?login[$ne]=kolsen). Results for all check-ins besides check-ins matching the lgoin 'kolsen' are returned and displayed. </p>
+			<li class="list"> Proof of vulnerability: </li>
+				<p> Displaying all last check-ins, excluding the login 'kolsen'. </p>
+				<p> <img id="img" src="images/privacy_login.png" alt="privacy"></p>
+
 			<li class="list"> Resolution: </li>
 			</ul>
+
 		<li class="list"> Privacy: Location </li>
 			<ul>
 			<li class="list"> Page Found: </li>
@@ -42,17 +70,7 @@
 			<li class="list"> Description: </li>
 			<li class="list"> Proof of vulnerability: </li>
 			<li class="list"> Resolution: </li>
-			</ul>
-
-		<li class="list"> Privacy: User Information </li>
-			<ul>
-			<li class="list"> Page Found: </li>
-			<li class="list"> Severity of Issue: </li>
-			<li class="list"> Description: </li>
-			<p> MongoDB Injections: -privacy issue: https://landmark-locator.herokuapp.com/checkins.json?login[$ne]=kolsen --> no validator</p>
-			<li class="list"> Proof of vulnerability: </li>
-			<li class="list"> Resolution: </li>
-			</ul>
+			</ul>	
 
 		<li class="list"> Application Error </li>
 			<ul>
@@ -68,6 +86,8 @@
 	<h2> Conclusion </h2>
 
 	<h2> References </h2>
+		<p> https://www.acunetix.com/websitesecurity/cross-site-scripting/ </p>
+		<p> https://www.owasp.org/index.php/XSS_(Cross_Site_Scripting)_Prevention_Cheat_Sheet </p>
 
 	</body>
 
