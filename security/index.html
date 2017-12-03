@@ -10,19 +10,20 @@
 	<body>
 	<h1> Security Report </h1>
 	<h2> Introduction </h2>
-		<p> The product is a web application that renders a location map using client and server side data. Unforutnatley, the web application is riddled with security and privacy vulnerabilities. I am hired to resolve the security and privacy issues in the applications. For reference, the following is the link to the web application we are testing: https://landmark-locator.herokuapp.com/ . </p> 
+		<p> The product is a web application that renders a location map, displaying the user's location and landmarks in a one mile radius, using client and server side data. Unfortunately, the web application is riddled with security and privacy vulnerabilities. I am hired to resolve the security and privacy issues in the application. For reference, the following is the link to the web application I am testing: https://landmark-locator.herokuapp.com/. </p> 
 
 	<h2> Methodology </h2>
-	<p> Attacks were initially performed without reading the source code, "black box" testing. After discovering any privacy or security issues through this, a second round of attacks were performed by downloading and reviewing the source code of the applicatoin. Furthermore, any past documents in the collection (MongoDB database) for checkins were deleted to allow for a clean slate. This allows for the following to be executed to check for vulnerabilities in the web application: </p> 
+	<p> Attacks were initially performed without reading the source code, "black box" testing. After discovering any privacy or security issues through this method, a second round of attacks were performed by downloading and reviewing the source code of the application. Furthermore, any past documents in the collection (MongoDB database) for checkins were deleted to allow for a clean slate. This allows for the following to be executed to check for vulnerabilities in the web application: </p> 
 		<ol> 
-		<li> Bypassing Restrictions on Input Choices </li>
+		<li> Inputting Parameters to test application capabilities </li>
 		<li> Testing Cross Site Scripting (XSS) </li>
-		<li> Privacy check for login information and location </li> 
+		<li> Privacy check for login information </li> 
+		<li> Privacy check for geolocation </li>
 		</ol>
-	<p> The above vulnerabilities were primarily checked for via curl in terminal. Curl commands vary based on what test was being exexcuted, but input paramters (login, lat, lng) and location of the webpage were changed for each test. The code for the web applicatoin was also viewed to determine any bad programming practices, vulnerabilities, and to suggest recommenations. </p> 	
+	<p> The above vulnerabilities were primarily checked for via curl in terminal. Curl commands vary based on what test was being exexcuted and input paramters (login, lat, lng) of the webpage were altered depending on the test. The code for the web application was also viewed to determine any bad programming practices, vulnerabilities, and suggest recommendations. </p> 	
 
 	<h2> Abstract of Findings </h2>
-		<p> The following vulnerabilities were found: Cross Site Scripting (XSS), privacy errors regarding geolocation and MongoDb injections for logins, and checking restrictions on input choices. For XSS, scripts were injected to login using curl. Specifically, adding an 'alert' popup and window location redirection was inserted to login via script. Both attacks triggered responses and, therefore, displayed vulnerabilities of the web application. An attacker could exploit this vulnerabilty within the web application so that the victim would be redirected to another webpage or receive malicious script to the browser. For privacy, there were two errors found. Changing the query string on the checkins.json (checkins.json?login[$ne]=kolsen) page can display all logins of all users who have checked in and their location. This is like a loop hole in MongoDB, where data that is not equal to the login 'kolsen', is returned on the web page, that was not accounted for in the code. The private information of any user who has checked in (location, id, and date checked in) is revealed. Furthermore, the overall location of the user is not private. There is no security authentication for location and thus it can be accessed or viewed by anyone. Testing inputting parameters via curl (login, lat, and lng), the web application crashedwhen not all of the parameters were satisfied. For example, in the cases of no login and no lat/lng, the app resulted in an 'Application Error' on Herokuapp instead of returning '[]'. </p>
+		<p> The following vulnerabilities were found: Cross Site Scripting (XSS), privacy errors regarding geolocation and MongoDb injections for logins, and checking restrictions on input choices. For XSS, scripts were injected to login using curl commands. Specifically, adding an 'alert' popup and window location redirection was inserted to login via script. Both attacks triggered responses and, therefore, displayed vulnerabilities of the web application. An attacker could exploit this vulnerabilty within the web application so that the victim would be redirected to another webpage or receive malicious script to the browser. Regarding privacy, there were two errors found. Changing the query string on the checkins.json (checkins.json?login[$ne]=LOGIN) page can display all logins of all users who have checked in and their location. This is like a loop hole in MongoDB, where data that is not equal to the login is returned on the web page. This privacy error was not accounted for in the code. The private information of any user who has checked in (location, id, and date checked in) is revealed. Furthermore, the overall physical location of the user is not private. There is no security authentication for location and, thus, it can be accessed or viewed by anyone. Lastly, testing input parameters via curl (login, lat, and lng), the web application crashed when not all of the parameters were satisfied. For example, in the cases of no login and no lat/lng, the app resulted in an 'Application Error' on Herokuapp instead of returning '[]'. </p>
 
 	<h2> Issues </h2>
 		<ol> 
@@ -55,7 +56,7 @@
 			<li class="list"> Severity of Issue: High</li>
 				<p> Private information of the user (id, location, and checked-in time) can be revealed to the attacker and exploited. 
 			<li class="list"> Description: </li>
-			<p> Through exploiting MongoDB injections, the query for https://landmark-locator.herokuapp.com/checkins.json can be changed to provide all logins. This is through teh parameter [$ne]=LOGIN where LOGIN is the login that you don't want to be returned. For this test, the the query was changed to checkins.json?login[$ne]=kolsen (LINK: https://landmark-locator.herokuapp.com/checkins.json?login[$ne]=kolsen). Results for all check-ins besides check-ins matching the lgoin 'kolsen' are returned and displayed. </p>
+			<p> Through exploiting MongoDB injections, the query for https://landmark-locator.herokuapp.com/checkins.json can be changed to provide all logins. This is through the parameter [$ne]=LOGIN where LOGIN is the login that you do not want to be returned. For this test, the query was changed to checkins.json?login[$ne]=kolsen (LINK: https://landmark-locator.herokuapp.com/checkins.json?login[$ne]=kolsen). Results for all check-ins, besides the check-ins matching the lgoin 'kolsen', are returned and displayed. </p>
 			<li class="list"> Proof of vulnerability: </li>
 				<p> Displaying all last check-ins, excluding the login 'kolsen'. </p>
 				<p> <img id="img" src="images/privacy_login.png" alt="privacy"></p>
@@ -71,7 +72,7 @@
 			<li class="list"> Severity of Issue: Low </li>
 				<p> When inputting the login, lat, lng parameters via curl in terminal, the web application crashes if not all parameteres are satisfied. An 'Application Error' in Heroku suggests a larger internal error with the code. A simple fix in code would resolve this error. There is no large threat of attack, but the web application does not work for the user if all parameters are not entered. </p>
 			<li class="list"> Description: </li>
-				<p> According to guidelines, the web application should return '{"error":"Whoops, something is wrong with your data!"}' when not all parameters (login, lat, lng) are entered correctly. However, sending via curl in terminal only lat and lng or only login results in an 'Application Error' on Heroku. </p>
+				<p> According to guidelines, the web application should return '{"error":"Whoops, something is wrong with your data!"}' when not all parameters (login, lat, lng) are entered correctly. However, sending only lat and lng or only login via curl in terminal results in an 'Application Error' on Heroku. </p>
 			<li class="list"> Proof of vulnerability: </li>
 				<p> Only lat and lng parameters sent via curl in terminal. </p>
 				<p> <img id="img" src="images/lat&lng.png" alt="lat&lng"></p>
@@ -82,7 +83,7 @@
 				<p> The same 'Application Error' response seen above was also obtained for when only login and lat or login and lng were sent via curl in terminal. </p>
 
 			<li class="list"> Resolution: </li>
-				<p> Analyzing the code for the app landmark-locator, a variable containing the JSON response {"error":"Whoops, something is wrong with your data!"} should be addded. For the case when the parameter is undefined, there should be a response.send of the varibale containing the JSON. Altering a bit of the original code, see below for the addition of the JSON response.</p>
+				<p> Analyzing the code for the app landmark-locator, a variable containing the JSON response {"error":"Whoops, something is wrong with your data!"} should be addded. For the case when the parameter is undefined, there should be a response.send of the variable containing the JSON. Altering a bit of the original code, see below for the addition of the JSON response.</p>
 				<p> Code including the variable 'error' was added. </p>
 				<p> <img id="img" src="images/error_code.png" alt="error"></p>
 
@@ -100,7 +101,7 @@
 				<p> </p>
 
 			<li class="list"> Severity of Issue: High </li>
-				<p> The ability to see the location of where you are and pin point others locations on the map via a collection database, sharing a server, or sending via curl in terminal is a high privacy and security risk. Hackers or unauthorized users could access this information and exploit it. </p> 
+				<p> The ability to see the location of where you are and pin point other users' locations on the map via a collection database, sharing a server, or sending via curl in terminal is a high privacy and security risk. Hackers or unauthorized users could access this information and exploit it. </p> 
 
 			<li class="list"> Description: </li>
 				<p> True privacy is when one is practically invisible and their geolocation is not detected. The code in landmark-locator uses Google Map API to provide geolocation. Thus, the user is not invisible and an attacker can detect where the user physically is and when they checked in to this location. Furthermore, when connecting to a database, sharing a server, or sending information via curl in terminal, one can pin point the physical location of other users as well. In the code, there is not an alert provided to the user about geolocation being used or the privacy issues entailed with geolocation. </p>
@@ -115,7 +116,7 @@
 				<p> <img id="img" src="images/geolocation_json.png" alt="geo-json"></p>
 
 			<li class="list"> Resolution: </li>
-				<p> The user should be aware of the geolocation privacy issues when using the web app. This could be made aware through self-education or having an alert pop up when using the web app that allows the user to choose whether they want their location to be accessed. </p> 
+				<p> The user should be aware of the geolocation privacy issues when using the web application. This could be made aware through self-education or having an alert pop up when using the web app that allows the user to choose whether they want their location to be accessed. </p> 
 			</ul>
 		</ol>	
 
