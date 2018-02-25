@@ -1,12 +1,7 @@
-## Lab 5
+# Annotation of a Video on a Web Page
 
-#### Hours worked on lab: 3 
+### Languages:
+#### JavaScript, HTML, CSS
 
-#### Correctly implemented:
-	1. The basics 
-		* folder name in private GitHub repository
-		* file names 
-		* repo name 
-		* README file
-		* one CSS file
-	2. The index.html page following all the instructions above
+### About: 
+#### Using built-in media support from HTML5 (event listener ane element id), a video on a web page is annotated with a timed script (line-by-line).

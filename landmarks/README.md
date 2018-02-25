@@ -1,22 +1,9 @@
-## Assignment 2
+# Personalized Geolocation Map   
 
-#### Hours worked on assignment: 15
+### Languages & Platforms:
+#### JavaScript, JQUERY, Heroku, HTML, CSS
 
-#### Correctly implemented:
-	1. The basics 
-		* folder name in private GitHub repository
-		* file names 
-		* README file
-		* one CSS file
-		* index.html
-	2. Retrieves your location via JavaScript navigator.geolocation object
-	3. Sends your location (latitude, longitude, login) to datastore
-	4. Retrieves locations historic landmarks within one mile of where you are, and all people in the class.
-	5. Displays locations of people in the class on the map. Clicking on a marker will display person's login, and mile(s) away from you in an info window. A unique icon for a person must be used (the image can be anything); all people markers on map will use the same icon.
-	6. Displays historic landmarks within one mile of where you are on the map. Clicking on a marker will display landmark's details in an information window. A unique icon for a landmark must be used (the image can be anything); all landmark markers on map will use the same icon.
-	7. Displays your location on the map with unique marker. Clicking on marker will display the name of the closest historic landmark from where you are including miles away in an info window.
-	8. Renders a polyline connecting your current location and the closest historic landmark from where you are. The polyline can be any visible color.
+### About: 
+#### Location is retrieved via JavaScript navigator.goelocation object, sent (latitude, longitude, login) to datastore, and displayed on the map with a unqiue marker. Local historic landmarks wihtin one mile of your location are retrieved and displayed on the map with a unique marker. Furthermore, location of other people can be sent and then displayed on map with a unique marker. Each marker includes an infobox that displays the person's created ID or name of landmark and distance (miles) away from you. When clicking on your marker, the closest landmark will be displayed with distance. Lastly, a polyline will be rendered connecting your current location to the closest historic landmark. 
 
 ##### Credit: Followed google maps API documentation and examples from github course account. 	
-
-##### Discussed spherical geometry techniques for finding distance with Frances DeFreitas. 

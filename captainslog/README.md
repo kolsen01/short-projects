@@ -1,10 +1,7 @@
-# Lab 6
+# Logging & Displaying Stored Responses
 
-#### Hours worked on assignment: 8
+### Languages:
+#### JavaScript, HTML, CSS
 
-#### Identify what aspects of the work have been correctly implemented: 
-	* Messages are displayed in the "log" section with latest message displayed first, at the top
-	* Messages are redisplayed (from local storage) on return to the page
-	* The basics (e.g., folder name, README)
-
-#### Discussed localStorage and iterating through keys versus length with Frances DeFreitas
+### About: 
+#### Messages, typed and entered, are displayed in the "log" section with the latest message dispaleyd first. Upon return to the web page, messages are redisplaced (using local storage).
